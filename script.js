@@ -337,10 +337,10 @@ async function saveTransaction() {
     const match = last.match(/TR(\d+)/);
     const next  = `TR${String((match ? Number(match[1]) : 0) + 1).padStart(6, '0')}`;
 
-    const { error: e1 } = await supabase.from(TABLE_TRANSACTIONS).insert([{ transno: next, salesdate: new Date().toISOString().split('T')[0], custno: cust, empno: emp, record_status:'ACTIVE' }]);
+    const { error: e1 } = await supabase.from(TABLE_TRANSACTIONS).insert([{ transno: next, salesdate: new Date().toISOString().split('T')[0], custno: cust, empno: emp }]);
     if (e1) return showToast('Save failed: ' + e1.message, 'error');
 
-    const { error: e2 } = await supabase.from(TABLE_SALESDETAIL).insert([{ transno: next, prodcode: prod, quantity: qty, record_status:'ACTIVE' }]);
+    const { error: e2 } = await supabase.from(TABLE_SALESDETAIL).insert([{ transno: next, prodcode: prod, quantity: qty }]);
     if (e2) return showToast('Detail save failed: ' + e2.message, 'error');
 
     closeCreateModal();
