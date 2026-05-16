@@ -45,10 +45,10 @@ Completed and verified the following test cases:
 
 | Test Case | Status |
 |-----------|--------|
-| Email Registration | ✅ Passed |
-| Google OAuth New User Login | ✅ Passed |
-| Login Guard blocks INACTIVE user | ✅ Passed |
-| Login Guard allows ACTIVE user | ✅ Passed |
+| Email Registration | ✅ Pending |
+| Google OAuth New User Login | ✅ Pending |
+| Login Guard blocks INACTIVE user | ✅ Pending |
+| Login Guard allows ACTIVE user | ✅ Pending |
 
 ---
 
