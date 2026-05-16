@@ -206,6 +206,26 @@ function filterByDate(txns) {
     return txns;
 }
 
+// ── MOBILE SIDEBAR TOGGLE ────────────────────────────────────
+function toggleSidebar() {
+    const sidebar  = document.getElementById('sidebar');
+    const overlay  = document.getElementById('sidebar-overlay');
+    if (!sidebar || !overlay) return;
+    const isOpen = sidebar.classList.toggle('open');
+    overlay.classList.toggle('active', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+
+function closeSidebarOnMobile() {
+    if (window.innerWidth <= 768) {
+        const sidebar  = document.getElementById('sidebar');
+        const overlay  = document.getElementById('sidebar-overlay');
+        if (sidebar)  sidebar.classList.remove('open');
+        if (overlay)  overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
 // ── NAVIGATION ────────────────────────────────────────────────
 function switchPage(pageId) {
     if ((pageId==='deleted-items'||pageId==='user-management') && !rights.VIEW_DELETED) { showToast('Access denied.','error'); return; }
@@ -226,6 +246,7 @@ function switchPage(pageId) {
     if (pageId==='products')         renderLookup('products');
     if (pageId==='user-management')  renderUserManagement();
     if (pageId==='deleted-items')    renderDeletedItems();
+    closeSidebarOnMobile(); // auto-close on mobile after nav
 }
 
 // ── DATA LOADING ──────────────────────────────────────────────
@@ -563,6 +584,7 @@ window.selectLoginRole    = selectLoginRole;
 window.handleLogin        = handleLogin;
 window.signInWithGoogle   = signInWithGoogle;
 window.switchPage         = switchPage;
+window.toggleSidebar      = toggleSidebar;
 window.setDateFilter      = setDateFilter;
 window.openCreateModal    = openCreateModal;
 window.closeCreateModal   = closeCreateModal;

@@ -1212,8 +1212,55 @@ select.field-input {
   background: #991b1b;
 }
 
-/* ── RESPONSIVE ── */
-@media (max-width:1200px) {
+/* ============================================================
+   RESPONSIVE — MOBILE FIRST
+   ============================================================ */
+
+/* ── Hamburger button (hidden on desktop) ── */
+.hamburger-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 8px;
+  color: var(--text);
+  transition: .15s;
+  flex-shrink: 0;
+}
+
+.hamburger-btn:hover {
+  background: var(--bg);
+}
+
+.hamburger-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--text);
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+}
+
+/* ── Sidebar overlay (mobile only) ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 990;
+  backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* ── TABLET: 1024px ── */
+@media (max-width: 1024px) {
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1221,67 +1268,290 @@ select.field-input {
   .charts-grid {
     grid-template-columns: 1fr;
   }
+
+  :root {
+    --sidebar-w: 240px;
+  }
 }
 
-@media (max-width:768px) {
+/* ── MOBILE: 768px ── */
+@media (max-width: 768px) {
   body {
     overflow: auto;
   }
 
+  /* ── App shell ── */
   .app-shell {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    height: auto;
     flex-direction: row;
-    flex-wrap: wrap;
+    position: relative;
   }
 
+  /* ── Sidebar becomes slide-in drawer ── */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px !important;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+    box-shadow: 4px 0 32px rgba(0,0,0,.25);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* ── Hamburger visible on mobile ── */
+  .hamburger-btn {
+    display: flex;
+  }
+
+  /* ── Topbar adjustments ── */
+  .topbar {
+    padding: 0 16px;
+    gap: 8px;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .topbar-title {
+    font-size: .95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar-breadcrumb {
+    display: none;
+  }
+
+  .topbar-date {
+    display: none;
+  }
+
+  /* ── Main content full width ── */
   .main-content {
-    height: auto;
-    overflow: visible;
-  }
-
-  .page-section {
-    height: auto;
-    overflow: visible;
-  }
-
-  .auth-screen {
-    flex-direction: column;
-  }
-
-  .auth-brand-panel {
-    padding: 40px 20px;
-  }
-
-  .auth-form-panel {
     width: 100%;
-    border-radius: 24px 24px 0 0;
-    padding: 32px 20px;
+    min-width: 0;
+    overflow-x: hidden;
   }
 
+  /* ── Page sections ── */
+  .page-section {
+    padding: 16px;
+    overflow-x: hidden;
+  }
+
+  /* ── Page header ── */
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .page-header h1 {
+    font-size: 1.4rem;
+  }
+
+  /* ── KPI Grid ── */
   .kpi-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .kpi-card {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .kpi-value {
+    font-size: 1.4rem;
+  }
+
+  .kpi-icon-wrap {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* ── Charts ── */
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .chart-box {
+    height: 260px;
+    padding: 12px;
+  }
+
+  /* ── Tables ── */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table thead th,
+  .data-table tbody td {
+    padding: 10px 12px;
+    font-size: .8rem;
+  }
+
+  /* Hide timestamp column on mobile */
+  .col-stamp {
+    display: none;
+  }
+
+  /* ── Filters bar ── */
+  .filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-box {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+
+  .record-badge {
+    align-self: flex-start;
+    margin-left: 0;
+  }
+
+  /* ── Date filter ── */
+  .date-filter-bar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .date-filter-btn {
+    font-size: .75rem;
+    padding: 5px 12px;
+  }
+
+  /* ── Modal ── */
+  .modal-box {
+    max-width: calc(100vw - 24px);
+    margin: 12px;
+    max-height: 90vh;
+    overflow-y: auto;
   }
 
   .two-col {
     grid-template-columns: 1fr;
   }
 
-  .page-section {
-    padding: 20px;
+  .modal-box-header {
+    padding: 18px 18px 0;
   }
 
-  .filters-bar {
+  .modal-box-body {
+    padding: 16px 18px;
+  }
+
+  .modal-box-footer {
+    padding: 12px 18px;
     flex-direction: column;
   }
 
-  .date-filter-bar {
-    flex-wrap: wrap;
-    gap: 6px;
+  .modal-box-footer .btn-primary,
+  .modal-box-footer .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ── Auth / Login ── */
+  .auth-screen {
+    flex-direction: column;
+  }
+
+  .auth-brand-panel {
+    padding: 32px 24px 24px;
+    flex: 0 0 auto;
+  }
+
+  .auth-brand-name {
+    font-size: 2rem;
+  }
+
+  .auth-brand-logo {
+    width: 70px;
+    height: 58px;
+    margin-bottom: 16px;
+  }
+
+  .auth-form-panel {
+    width: 100%;
+    flex: 1;
+    border-radius: 24px 24px 0 0;
+    padding: 28px 20px;
+    min-height: 0;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    text-align: center;
+  }
+
+  /* ── Page action button ── */
+  .btn-primary {
+    white-space: nowrap;
+  }
+}
+
+/* ── SMALL PHONE: 480px ── */
+@media (max-width: 480px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .kpi-value {
+    font-size: 1.2rem;
+  }
+
+  .kpi-label {
+    font-size: .65rem;
+  }
+
+  .page-header {
+    margin-bottom: 12px;
+  }
+
+  .page-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .page-section {
+    padding: 12px;
+  }
+
+  .topbar {
+    height: 56px;
+  }
+
+  .auth-brand-panel {
+    padding: 24px 16px 16px;
+  }
+
+  .auth-brand-name {
+    font-size: 1.6rem;
   }
 }
 
