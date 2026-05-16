@@ -47,13 +47,6 @@ The Hope Inc. Sales Management System provides businesses with tools to:
 
 ## ✨ Key Features
 
-### 🔐 Role-Based Access Control (RBAC)
-Secure system access for different user roles:
-
-- **SUPERADMIN** – Full system access
-- **ADMIN** – Business and operational management
-- **USER** – Standard user access
-
 ### 📊 Real-Time Analytics
 Interactive dashboards with live reporting for:
 
