@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/hope-inc-prototype/assets/index-LHpRrYrf.js"></script>
-  <link rel="stylesheet" crossorigin href="/hope-inc-prototype/assets/index-CqZa1aTN.css">
+  <script type="module" crossorigin src="/hope-inc-prototype/assets/index-CvesX0g0.js"></script>
+  <link rel="stylesheet" crossorigin href="/hope-inc-prototype/assets/index-DBzq79YP.css">
 </head>
 <body>
 
@@ -164,6 +164,13 @@
           <div>
             <h1>Good day, <span id="dash-howdy-name" class="text-accent">User</span>!</h1>
             <p class="page-subtitle">Here's what's happening with your sales today.</p>
+          </div>
+          <!-- Date Filter -->
+          <div class="date-filter-bar">
+            <button id="df-today" class="date-filter-btn" onclick="setDateFilter('today')">Today</button>
+            <button id="df-week"  class="date-filter-btn" onclick="setDateFilter('week')">This Week</button>
+            <button id="df-month" class="date-filter-btn" onclick="setDateFilter('month')">This Month</button>
+            <button id="df-all"   class="date-filter-btn active" onclick="setDateFilter('all')">All Time</button>
           </div>
         </div>
 
@@ -320,6 +327,22 @@
           </div>
           <div class="chart-box" style="max-width: 480px; margin: 0 auto;"><canvas id="chartProducts"></canvas></div>
         </div>
+
+        <!-- Top Products Table -->
+        <div class="content-card" style="margin-top: 24px;">
+          <div class="card-header">
+            <h3 class="card-title">🏆 Best Sellers — Top 10 Products</h3>
+            <span class="card-badge">By Qty Sold</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th style="width:50px">#</th><th>Product</th><th class="text-right">Total Qty Sold</th></tr></thead>
+              <tbody id="top-products-body">
+                <tr><td colspan="3" class="empty-row">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <!-- =================== DELETED ITEMS =================== -->
@@ -410,16 +433,22 @@
         <div class="modal-form-row two-col">
           <div class="form-field">
             <label class="field-label">Product</label>
-            <select id="select-product" class="field-input" onchange="autoFillPrice()">
-              <option value="">— Select Product —</option>
-            </select>
+            <select id="select-product" class="field-input" onchange="autoFillPrice()"><option value="">— Select Product —</option></select>
           </div>
           <div class="form-field">
-            <label class="field-label">
-              Unit Price
-              <span class="field-label-badge">Auto-filled · Read-only</span>
-            </label>
+            <label class="field-label">Unit Price <span class="field-label-badge">Auto-filled · Read-only</span></label>
             <input type="text" id="input-price" class="field-input price-field" placeholder="Select a product…" readonly>
+          </div>
+        </div>
+
+        <div class="modal-form-row two-col">
+          <div class="form-field">
+            <label class="field-label">Quantity</label>
+            <input type="number" id="input-quantity" class="field-input" value="1" min="1" placeholder="Enter quantity">
+          </div>
+          <div class="form-field">
+            <label class="field-label">Date <span class="field-label-badge">Auto-set</span></label>
+            <input type="text" class="field-input auto-field" id="modal-date-display" disabled>
           </div>
         </div>
 
