@@ -63,7 +63,7 @@ function signInWithGoogle() { showToast('Google login disabled for this build.',
 
 const RIGHTS = {
     USER:       { SALES_ADD:true,  SALES_EDIT:false, SALES_DEL:false, VIEW_DELETED:false, USER_MGMT:false },
-    ADMIN:      { SALES_ADD:true,  SALES_EDIT:true,  SALES_DEL:false, VIEW_DELETED:true,  USER_MGMT:true  },
+    ADMIN:      { SALES_ADD:true,  SALES_EDIT:true,  SALES_DEL:true,  VIEW_DELETED:true,  USER_MGMT:true  },
     SUPERADMIN: { SALES_ADD:true,  SALES_EDIT:true,  SALES_DEL:true,  VIEW_DELETED:true,  USER_MGMT:true  },
 };
 let rights = RIGHTS.USER;
@@ -269,10 +269,19 @@ function renderDeletedItems() {
 
 async function softDelete(transno) {
     if (!rights.SALES_DEL) return showToast('Access denied.','error');
-    if (!confirm(`Soft-delete #${transno}? (Recoverable from Deleted Items)`)) return;
+    if (!confirm(`Soft-delete #${transno}? It will move to Deleted Records (recoverable).`)) return;
     const { error } = await supabase.from(TABLE_TRANSACTIONS).update({record_status:'INACTIVE'}).eq('transno',transno);
-    if (error) showToast(error.message,'error');
-    else { showToast(`Deleted #${transno} — recoverable`,'success'); await loadReferenceData(); await loadTransactions(); }
+    if (error) {
+        if (error.message && error.message.includes('record_status')) {
+            showToast('⚠️ Run the SQL migration first! (ALTER TABLE sales ADD COLUMN record_status)', 'error');
+        } else {
+            showToast('Delete failed: ' + error.message, 'error');
+        }
+        return;
+    }
+    showToast(`🗑️ #${transno} moved to Deleted Records (recoverable)`,'success');
+    await loadReferenceData();
+    await loadTransactions();
 }
 
 async function recoverTransaction(transno) {
