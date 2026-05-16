@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
     rel="stylesheet">
-  <script type="module" crossorigin src="/hope-inc-prototype/assets/index-fZ-fUyzr.js"></script>
-  <link rel="stylesheet" crossorigin href="/hope-inc-prototype/assets/index-DfONa5_X.css">
+  <script type="module" crossorigin src="/hope-inc-prototype/assets/index-Do_eF5JH.js"></script>
+  <link rel="stylesheet" crossorigin href="/hope-inc-prototype/assets/index-2JmM1XS4.css">
 </head>
 
 <body>
@@ -287,6 +287,20 @@
           </div>
         </div>
         <div class="topbar-right">
+          <!-- Global Date Filter -->
+          <div class="topbar-filter-group" id="topbar-date-filters">
+            <button id="df-today" class="date-filter-btn" onclick="setDateFilter('today')">Today</button>
+            <button id="df-week" class="date-filter-btn" onclick="setDateFilter('week')">Week</button>
+            <button id="df-month" class="date-filter-btn" onclick="setDateFilter('month')">Month</button>
+            <button id="df-all" class="date-filter-btn active" onclick="setDateFilter('all')">All</button>
+            <button id="df-custom" class="date-filter-btn" onclick="toggleCustomRange()">📅</button>
+          </div>
+          <!-- Custom Range Picker (hidden by default) -->
+          <div class="custom-range-picker" id="custom-range-picker">
+            <input type="date" id="range-from" class="range-input" onchange="applyCustomRange()">
+            <span class="range-sep">→</span>
+            <input type="date" id="range-to" class="range-input" onchange="applyCustomRange()">
+          </div>
           <div class="topbar-date" id="topbar-date"></div>
           <div class="topbar-user-chip">
             <div class="chip-dot"></div>
@@ -301,13 +315,6 @@
           <div>
             <h1>Good day, <span id="dash-howdy-name" class="text-accent">User</span>!</h1>
             <p class="page-subtitle">Here's what's happening with your sales today.</p>
-          </div>
-          <!-- Date Filter -->
-          <div class="date-filter-bar">
-            <button id="df-today" class="date-filter-btn" onclick="setDateFilter('today')">Today</button>
-            <button id="df-week" class="date-filter-btn" onclick="setDateFilter('week')">This Week</button>
-            <button id="df-month" class="date-filter-btn" onclick="setDateFilter('month')">This Month</button>
-            <button id="df-all" class="date-filter-btn active" onclick="setDateFilter('all')">All Time</button>
           </div>
         </div>
 
