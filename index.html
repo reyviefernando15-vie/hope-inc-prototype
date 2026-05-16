@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
     rel="stylesheet">
-  <script type="module" crossorigin src="/hope-inc-prototype/assets/index-DVOHiZY4.js"></script>
-  <link rel="stylesheet" crossorigin href="/hope-inc-prototype/assets/index-DTuyotu6.css">
+  <script type="module" crossorigin src="/hope-inc-prototype/assets/index-fZ-fUyzr.js"></script>
+  <link rel="stylesheet" crossorigin href="/hope-inc-prototype/assets/index-DfONa5_X.css">
 </head>
 
 <body>
@@ -264,14 +264,27 @@
       </div>
     </aside>
 
+    <!-- Sidebar overlay (mobile tap-to-close) -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <!-- MAIN CONTENT -->
     <main class="main-content" id="main-content">
 
       <!-- TOP BAR -->
       <header class="topbar">
         <div class="topbar-left">
-          <h2 id="topbar-title" class="topbar-title">Dashboard</h2>
-          <div id="topbar-breadcrumb" class="topbar-breadcrumb">Home / Dashboard</div>
+          <!-- Hamburger (mobile only) -->
+          <button class="hamburger-btn" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Open menu">
+            <svg viewBox="0 0 24 24">
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <div>
+            <h2 id="topbar-title" class="topbar-title">Dashboard</h2>
+            <div id="topbar-breadcrumb" class="topbar-breadcrumb">Home / Dashboard</div>
+          </div>
         </div>
         <div class="topbar-right">
           <div class="topbar-date" id="topbar-date"></div>
