@@ -1,37 +1,39 @@
-﻿import { createClient } from '@supabase/supabase-js';
+// ============================================================
+//  Hope, Inc. — Sales Management System
+//  Uses Supabase via CDN (window.supabase.createClient)
+// ============================================================
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://ygoxhjemowubyfzfbumf.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_NUyGPE4L8ZVmaQRCeR_Ufg_k2Dy-G8c';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-window.supabase = supabase;
+const SUPABASE_URL = 'https://ygoxhjemowubyfzfbumf.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_NUyGPE4L8ZVmaQRCeR_Ufg_k2Dy-G8c';
 
-const TABLE_USERS = 'employee';
+// Wait for Supabase CDN to be available
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const TABLE_USERS       = 'employee';
 const TABLE_TRANSACTIONS = 'sales';
-const TABLE_CUSTOMERS = 'customer';
-const TABLE_PRODUCTS = 'product';
-const TABLE_PAYMENTS = 'payment';
+const TABLE_CUSTOMERS   = 'customer';
+const TABLE_PRODUCTS    = 'product';
+const TABLE_PAYMENTS    = 'payment';
 const TABLE_SALESDETAIL = 'salesdetail';
-const TABLE_LOGS = 'logs';
+const TABLE_LOGS        = 'logs';
 
-let currentRole = 'USER';
-let selectedLoginRole = 'USER';
-let allTransactions = [];
-window.customerMap = {};
-window.employeeMap = {};
-window.productMap = {};
-window.paymentsMap = {};
-window.detailsMap = {};
-let customerMap = window.customerMap;
-let employeeMap = window.employeeMap;
-let paymentsMap = window.paymentsMap;
-let detailsMap = window.detailsMap;
-let customersList = [];
-let employeesList = [];
-let productsList = [];
+let currentRole        = 'USER';
+let selectedLoginRole  = 'USER';
+let allTransactions    = [];
+let customerMap        = {};
+let employeeMap        = {};
+let productMap         = {};
+let paymentsMap        = {};
+let customersList      = [];
+let employeesList      = [];
+let productsList       = [];
 
+// ============================================================
+//  AUTH
+// ============================================================
 function selectLoginRole(role) {
     selectedLoginRole = role;
-    ['USER','ADMIN','SUPERADMIN'].forEach(t => {
+    ['USER', 'ADMIN', 'SUPERADMIN'].forEach(t => {
         const btn = document.getElementById(`tab-${t}`);
         if (btn) btn.classList.remove('active');
     });
@@ -42,13 +44,10 @@ function selectLoginRole(role) {
 async function handleLogin() {
     const inputVal = document.getElementById('login-email').value.trim();
     const btn = document.getElementById('btn-login');
-    if (btn) {
-        btn.textContent = 'Signing in…';
-        btn.disabled = true;
-    }
+    if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
 
     if (inputVal === 'test' || inputVal === '') {
-        await finalizeLogin({ name:'Demo ' + selectedLoginRole, id:'T-001', role:selectedLoginRole });
+        await finalizeLogin({ name: 'Demo ' + selectedLoginRole, id: 'T-001', role: selectedLoginRole });
         return;
     }
 
@@ -59,20 +58,13 @@ async function handleLogin() {
         .limit(1);
 
     if (error) {
-        showToast('Supabase login error: ' + error.message, 'error');
-        if (btn) {
-            btn.textContent = 'Sign In Securely';
-            btn.disabled = false;
-        }
+        showToast('Supabase error: ' + error.message, 'error');
+        if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; }
         return;
     }
-
     if (!data || data.length === 0) {
         showToast("ID not recognized. Use 'test' to bypass.", 'error');
-        if (btn) {
-            btn.textContent = 'Sign In Securely';
-            btn.disabled = false;
-        }
+        if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; }
         return;
     }
 
@@ -82,76 +74,73 @@ async function handleLogin() {
 }
 
 function signInWithGoogle() {
-    showToast('Google login is disabled for this version of the app.', 'error');
+    showToast('Google login is disabled for this version.', 'error');
 }
 
 async function finalizeLogin(user) {
     currentRole = user.role || 'USER';
+    const name  = user.name || 'User';
+    const id    = user.id   || 'ID';
 
-    const name = user.name || 'User';
-    const id = user.id || 'ID';
-
-    document.getElementById('admin-prof-name').textContent = name;
-    document.getElementById('admin-prof-id').textContent = id;
-    document.getElementById('admin-role-title').textContent = currentRole;
-    document.getElementById('dash-howdy-name').textContent = name.split(' ')[0];
-    document.getElementById('topbar-username').textContent = name.split(' ')[0];
-    document.getElementById('user-avatar-initial').textContent = (name || 'U').charAt(0).toUpperCase();
+    document.getElementById('admin-prof-name').textContent      = name;
+    document.getElementById('admin-prof-id').textContent        = id;
+    document.getElementById('admin-role-title').textContent     = currentRole;
+    document.getElementById('dash-howdy-name').textContent      = name.split(' ')[0];
+    document.getElementById('topbar-username').textContent      = name.split(' ')[0];
+    document.getElementById('user-avatar-initial').textContent  = (name || 'U').charAt(0).toUpperCase();
 
     const navDeleted = document.getElementById('nav-deleted');
     if (navDeleted) navDeleted.style.display = (currentRole === 'USER') ? 'none' : 'flex';
 
-    if (await tableExists(TABLE_LOGS)) {
-        await supabase.from(TABLE_LOGS).insert([{ name, role: currentRole, action:'Login', timestamp:new Date().toLocaleString(), rawDate:new Date().toISOString() }]);
-    }
+    // Try to log — silently skip if table doesn't exist
+    try {
+        await supabase.from(TABLE_LOGS).insert([{
+            name, role: currentRole, action: 'Login',
+            timestamp: new Date().toLocaleString(),
+            rawDate: new Date().toISOString()
+        }]);
+    } catch (_) {}
 
     await enterApp();
 }
 
-async function tableExists(tableName) {
-    const { error } = await supabase.from(tableName).select('1').limit(1);
-    return !error;
-}
-
 async function enterApp() {
     document.getElementById('screen-signin').style.display = 'none';
-    document.getElementById('main-app').style.display = 'flex';
+    document.getElementById('main-app').style.display      = 'flex';
     await loadReferenceData();
     populateDropdowns();
     switchPage('dashboard');
     await loadTransactions();
 }
 
+// ============================================================
+//  NAVIGATION
+// ============================================================
 function switchPage(pageId) {
     if (pageId === 'deleted-items' && currentRole === 'USER') {
         showToast('Access denied. Insufficient role permissions.', 'error');
         return;
     }
-
     document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
     const page = document.getElementById(pageId);
     if (page) page.classList.add('active');
 
-    const navKey = pageId.split('-')[0];
-    const nav = document.getElementById(`nav-${pageId === 'deleted-items' ? 'deleted' : navKey}`);
+    const nav = document.getElementById(`nav-${pageId === 'deleted-items' ? 'deleted' : pageId.split('-')[0]}`);
     if (nav) nav.classList.add('active');
 
-    const titles = {
-        'dashboard':'Dashboard','transactions':'Sales Registry',
-        'reports':'Analytics','deleted-items':'Deleted Records'
-    };
-    const breadcrumbs = {
-        'dashboard':'Home / Dashboard','transactions':'Records / Transactions',
-        'reports':'Records / Analytics','deleted-items':'Records / Deleted'
-    };
-    document.getElementById('topbar-title').textContent = titles[pageId] || '';
+    const titles      = { dashboard: 'Dashboard', transactions: 'Sales Registry', reports: 'Analytics', 'deleted-items': 'Deleted Records' };
+    const breadcrumbs = { dashboard: 'Home / Dashboard', transactions: 'Records / Transactions', reports: 'Records / Analytics', 'deleted-items': 'Records / Deleted' };
+    document.getElementById('topbar-title').textContent      = titles[pageId]      || '';
     document.getElementById('topbar-breadcrumb').textContent = breadcrumbs[pageId] || '';
 
     if (pageId === 'reports') renderCharts();
 }
 
+// ============================================================
+//  DATA LOADING
+// ============================================================
 async function loadReferenceData() {
     const [custRes, empRes, prodRes, paymentRes, detailRes] = await Promise.all([
         supabase.from(TABLE_CUSTOMERS).select('*'),
@@ -162,29 +151,20 @@ async function loadReferenceData() {
     ]);
 
     if (custRes.error || empRes.error || prodRes.error) {
-        showToast('Unable to load reference data from Supabase. Check table names.', 'error');
+        showToast('⚠️ Unable to load Supabase data. Check table names or RLS policies.', 'error');
     }
 
-    customersList = custRes.data || [];
-    employeesList = empRes.data || [];
-    productsList = prodRes.data || [];
+    customersList = custRes.data  || [];
+    employeesList = empRes.data   || [];
+    productsList  = prodRes.data  || [];
 
-    window.customerMap = customerMap = Object.fromEntries((customersList || []).map(c => [c.custno, c.custname]));
-    window.employeeMap = employeeMap = Object.fromEntries((employeesList || []).map(e => [e.empno, `${e.firstname || ''} ${e.lastname || ''}`.trim()]));
-    window.productMap = productMap = Object.fromEntries((productsList || []).map(p => [p.prodcode, p.description]));
+    customerMap = Object.fromEntries(customersList.map(c => [c.custno, c.custname]));
+    employeeMap = Object.fromEntries(employeesList.map(e => [e.empno, `${e.firstname || ''} ${e.lastname || ''}`.trim()]));
+    productMap  = Object.fromEntries(productsList.map(p  => [p.prodcode, p.description]));
 
-    window.paymentsMap = paymentsMap = {};
+    paymentsMap = {};
     (paymentRes.data || []).forEach(p => {
-        const key = p.transno;
-        const amount = Number(p.amount || 0);
-        paymentsMap[key] = (paymentsMap[key] || 0) + amount;
-    });
-
-    window.detailsMap = detailsMap = {};
-    (detailRes.data || []).forEach(item => {
-        const key = item.transno;
-        if (!detailsMap[key]) detailsMap[key] = [];
-        detailsMap[key].push(item);
+        paymentsMap[p.transno] = (paymentsMap[p.transno] || 0) + Number(p.amount || 0);
     });
 }
 
@@ -193,8 +173,9 @@ async function loadTransactions() {
         .from(TABLE_TRANSACTIONS)
         .select('*')
         .order('salesdate', { ascending: true });
+
     if (error) {
-        showToast('Unable to load sales data: ' + error.message, 'error');
+        showToast('Unable to load sales: ' + error.message, 'error');
         allTransactions = [];
     } else {
         allTransactions = data || [];
@@ -202,38 +183,39 @@ async function loadTransactions() {
     renderTransactions(allTransactions);
 }
 
+// ============================================================
+//  RENDER
+// ============================================================
 function renderTransactions(txns) {
-    const bodyActive = document.getElementById('sales-list-body');
+    const bodyActive  = document.getElementById('sales-list-body');
     const bodyDeleted = document.getElementById('deleted-sales-body');
-    const bodyRecent = document.getElementById('dash-recent-body');
+    const bodyRecent  = document.getElementById('dash-recent-body');
 
-    if (bodyActive) bodyActive.innerHTML = '';
+    if (bodyActive)  bodyActive.innerHTML  = '';
     if (bodyDeleted) bodyDeleted.innerHTML = '';
-    if (bodyRecent) bodyRecent.innerHTML = '';
+    if (bodyRecent)  bodyRecent.innerHTML  = '';
 
-    let totalRevenue = 0;
-    let activeCount = 0;
-    const customers = new Set();
+    let totalRevenue = 0, activeCount = 0;
+    const customers  = new Set();
     const recentRows = [];
 
     txns.forEach(t => {
-        const transNo = t.transno || 'UNKNOWN';
-        const date = t.salesdate || t.date || '—';
+        const transNo      = t.transno || 'UNKNOWN';
+        const date         = t.salesdate || t.date || '—';
         const customerName = customerMap[t.custno] || t.custno || 'Unknown';
-        const employeeName = employeeMap[t.empno] || t.empno || 'Unknown';
-        const total = Number(paymentsMap[transNo] || 0);
+        const employeeName = employeeMap[t.empno]  || t.empno  || 'Unknown';
+        const total        = Number(paymentsMap[transNo] || 0);
 
         totalRevenue += total;
         activeCount++;
         customers.add(customerName);
         recentRows.push({ ...t, customerName, employeeName, total, date });
 
-        const stampTd = '<td class="col-stamp"></td>';
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="sales-no-cell">#${transNo}</td>
             <td>${date}</td>
-            ${stampTd}
+            <td class="col-stamp"></td>
             <td>${customerName}</td>
             <td>${employeeName}</td>
             <td class="amount-cell text-right">₱${total.toFixed(2)}</td>
@@ -242,19 +224,15 @@ function renderTransactions(txns) {
         if (bodyActive) bodyActive.appendChild(tr);
     });
 
-    if (bodyActive && bodyActive.innerHTML === '') {
-        bodyActive.innerHTML = '<tr><td colspan="7" class="empty-row">No sales records found.</td></tr>';
-    }
-    if (bodyDeleted && bodyDeleted.innerHTML === '') {
-        bodyDeleted.innerHTML = '<tr><td colspan="5" class="empty-row">Deleted records not supported in this schema.</td></tr>';
-    }
+    if (bodyActive  && bodyActive.innerHTML  === '') bodyActive.innerHTML  = '<tr><td colspan="7" class="empty-row">No sales records found.</td></tr>';
+    if (bodyDeleted && bodyDeleted.innerHTML === '') bodyDeleted.innerHTML = '<tr><td colspan="5" class="empty-row">No deleted records.</td></tr>';
 
-    const avg = activeCount > 0 ? (totalRevenue / activeCount) : 0;
-    document.getElementById('dash-today-sales').textContent = totalRevenue.toFixed(2);
-    document.getElementById('dash-today-total').textContent = activeCount;
+    const avg = activeCount > 0 ? totalRevenue / activeCount : 0;
+    document.getElementById('dash-today-sales').textContent    = totalRevenue.toFixed(2);
+    document.getElementById('dash-today-total').textContent    = activeCount;
     document.getElementById('dash-today-customers').textContent = customers.size;
-    document.getElementById('dash-avg-value').textContent = avg.toFixed(2);
-    document.getElementById('txn-count-badge').textContent = `${activeCount} record${activeCount !== 1 ? 's' : ''}`;
+    document.getElementById('dash-avg-value').textContent      = avg.toFixed(2);
+    document.getElementById('txn-count-badge').textContent     = `${activeCount} record${activeCount !== 1 ? 's' : ''}`;
 
     if (bodyRecent) {
         const recent = recentRows.slice(-5).reverse();
@@ -262,12 +240,11 @@ function renderTransactions(txns) {
             bodyRecent.innerHTML = '<tr><td colspan="6" class="empty-row">No records yet.</td></tr>';
         } else {
             recent.forEach(t => {
-                const stampTd = '<td class="col-stamp"></td>';
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="sales-no-cell">#${t.transno}</td>
                     <td>${t.date}</td>
-                    ${stampTd}
+                    <td class="col-stamp"></td>
                     <td>${t.customerName}</td>
                     <td>${t.employeeName}</td>
                     <td class="amount-cell text-right">₱${t.total.toFixed(2)}</td>
@@ -279,12 +256,12 @@ function renderTransactions(txns) {
 }
 
 function filterTransactions() {
-    const query = (document.getElementById('txn-search').value || '').toLowerCase();
+    const query     = (document.getElementById('txn-search').value || '').toLowerCase();
     const empFilter = (document.getElementById('filter-employee').value || '').toLowerCase();
-    const rows = document.querySelectorAll('#sales-list-body tr');
-    let visible = 0;
+    const rows      = document.querySelectorAll('#sales-list-body tr');
+    let visible     = 0;
     rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
+        const text  = row.textContent.toLowerCase();
         const match = text.includes(query) && (!empFilter || text.includes(empFilter));
         row.style.display = match ? '' : 'none';
         if (match) visible++;
@@ -292,17 +269,12 @@ function filterTransactions() {
     document.getElementById('txn-count-badge').textContent = `${visible} record${visible !== 1 ? 's' : ''}`;
 }
 
-function deleteTransaction() {
-    showToast('Delete is not supported for imported sales data.', 'error');
-}
-
-function restoreTransaction() {
-    showToast('Restore is not supported for imported sales data.', 'error');
-}
-
+// ============================================================
+//  DROPDOWNS
+// ============================================================
 function populateDropdowns() {
     const custSel = document.getElementById('select-customer');
-    const empSel = document.getElementById('select-employee');
+    const empSel  = document.getElementById('select-employee');
     const prodSel = document.getElementById('select-product');
 
     if (custSel) {
@@ -319,11 +291,14 @@ function populateDropdowns() {
     }
 }
 
+// ============================================================
+//  MODAL
+// ============================================================
 function openCreateModal() {
     const modal = document.getElementById('modal-create');
     if (modal) modal.classList.add('open');
-    document.getElementById('select-product').value = '';
-    document.getElementById('input-price').value = '';
+    document.getElementById('select-product').value         = '';
+    document.getElementById('input-price').value            = '';
     document.getElementById('select-customer').selectedIndex = 0;
     document.getElementById('select-employee').selectedIndex = 0;
 }
@@ -334,20 +309,23 @@ function closeCreateModal() {
 }
 
 function autoFillPrice() {
-    const prodId = document.getElementById('select-product').value;
+    const prodId     = document.getElementById('select-product').value;
     const priceInput = document.getElementById('input-price');
+    const product    = productsList.find(p => p.prodcode === prodId);
     if (priceInput) {
-        priceInput.value = prodId ? '₱ 0.00' : '';
+        priceInput.value = prodId
+            ? (product && product.unitprice ? '₱ ' + Number(product.unitprice).toFixed(2) : '₱ 0.00')
+            : '';
     }
 }
 
 async function saveTransaction() {
     const cust = document.getElementById('select-customer').value;
-    const emp = document.getElementById('select-employee').value;
+    const emp  = document.getElementById('select-employee').value;
     const prod = document.getElementById('select-product').value;
 
     if (!cust) return showToast('Please select a customer.', 'error');
-    if (!emp) return showToast('Please select an employee.', 'error');
+    if (!emp)  return showToast('Please select an employee.', 'error');
     if (!prod) return showToast('Please select a product.', 'error');
 
     const now = new Date();
@@ -357,17 +335,13 @@ async function saveTransaction() {
         .order('transno', { ascending: false })
         .limit(1);
 
-    if (maxError) {
-        return showToast('Unable to save transaction: ' + maxError.message, 'error');
-    }
+    if (maxError) return showToast('Unable to save: ' + maxError.message, 'error');
 
-    let lastId = 'TR000000';
-    if (maxRows && maxRows.length > 0) {
-        lastId = maxRows[0].transno;
-    }
-    const match = lastId.match(/TR(\d+)/);
-    const nextNumber = match ? Number(match[1]) + 1 : 1;
-    const newTransNo = `TR${String(nextNumber).padStart(6, '0')}`;
+    let lastId   = 'TR000000';
+    if (maxRows && maxRows.length > 0) lastId = maxRows[0].transno;
+    const match     = lastId.match(/TR(\d+)/);
+    const nextNum   = match ? Number(match[1]) + 1 : 1;
+    const newTransNo = `TR${String(nextNum).padStart(6, '0')}`;
 
     const salesInsert = await supabase.from(TABLE_TRANSACTIONS).insert([{
         transno: newTransNo,
@@ -375,57 +349,50 @@ async function saveTransaction() {
         custno: cust,
         empno: emp
     }]);
-
-    if (salesInsert.error) {
-        return showToast('Save failed: ' + salesInsert.error.message, 'error');
-    }
+    if (salesInsert.error) return showToast('Save failed: ' + salesInsert.error.message, 'error');
 
     const detailInsert = await supabase.from(TABLE_SALESDETAIL).insert([{
         transno: newTransNo,
         prodcode: prod,
         quantity: 1
     }]);
-
-    if (detailInsert.error) {
-        return showToast('Save failed: ' + detailInsert.error.message, 'error');
-    }
+    if (detailInsert.error) return showToast('Save failed: ' + detailInsert.error.message, 'error');
 
     closeCreateModal();
-    showToast('Transaction saved successfully!', 'success');
+    showToast('✅ Transaction saved successfully!', 'success');
     await loadReferenceData();
     await loadTransactions();
 }
 
+// ============================================================
+//  CHARTS
+// ============================================================
 let charts = {};
 function renderCharts() {
-    const txns = allTransactions || [];
-    const empSales = {};
+    const txns     = allTransactions || [];
+    const empSales  = {};
     const custSales = {};
 
     txns.forEach(t => {
-        const transNo = t.transno;
-        const amount = Number(paymentsMap[transNo] || 0);
-        const employeeName = employeeMap[t.empno] || t.empno || 'Unknown';
+        const amount       = Number(paymentsMap[t.transno] || 0);
+        const employeeName = employeeMap[t.empno]  || t.empno  || 'Unknown';
         const customerName = customerMap[t.custno] || t.custno || 'Unknown';
-
-        if (!empSales[employeeName]) empSales[employeeName] = 0;
-        if (!custSales[customerName]) custSales[customerName] = 0;
-
-        empSales[employeeName] += amount;
-        custSales[customerName] += amount;
+        empSales[employeeName]  = (empSales[employeeName]  || 0) + amount;
+        custSales[customerName] = (custSales[customerName] || 0) + amount;
     });
 
-    const opts = { responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{ position:'bottom', labels:{ padding:16, font:{size:12,family:'Inter'} } } }
+    const opts = {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { padding: 16, font: { size: 12, family: 'Inter' } } } }
     };
 
     const ctxEmp = document.getElementById('chartEmployee');
     if (ctxEmp) {
         if (charts.emp) charts.emp.destroy();
         charts.emp = new Chart(ctxEmp.getContext('2d'), {
-            type:'bar',
-            data:{ labels:Object.keys(empSales), datasets:[{ label:'Revenue (₱)', data:Object.values(empSales), backgroundColor:['#6366f1','#8b5cf6','#a78bfa'], borderRadius:6, borderSkipped:false }] },
-            options:{ ...opts, plugins:{...opts.plugins, legend:{display:false}}, scales:{ y:{ beginAtZero:true, grid:{color:'#f1f5f9'}, ticks:{font:{family:'Inter'}} }, x:{ grid:{display:false}, ticks:{font:{family:'Inter'}} } } }
+            type: 'bar',
+            data: { labels: Object.keys(empSales), datasets: [{ label: 'Revenue (₱)', data: Object.values(empSales), backgroundColor: ['#6366f1', '#8b5cf6', '#a78bfa', '#ec4899', '#14b8a6'], borderRadius: 6, borderSkipped: false }] },
+            options: { ...opts, plugins: { ...opts.plugins, legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Inter' } } }, x: { grid: { display: false }, ticks: { font: { family: 'Inter' } } } } }
         });
     }
 
@@ -433,9 +400,9 @@ function renderCharts() {
     if (ctxCust) {
         if (charts.cust) charts.cust.destroy();
         charts.cust = new Chart(ctxCust.getContext('2d'), {
-            type:'pie',
-            data:{ labels:Object.keys(custSales), datasets:[{ data:Object.values(custSales), backgroundColor:['#10b981','#6366f1','#f59e0b','#ef4444'], borderWidth:2, borderColor:'#fff' }] },
-            options:opts
+            type: 'pie',
+            data: { labels: Object.keys(custSales), datasets: [{ data: Object.values(custSales), backgroundColor: ['#10b981', '#6366f1', '#f59e0b', '#ef4444', '#8b5cf6'], borderWidth: 2, borderColor: '#fff' }] },
+            options: opts
         });
     }
 
@@ -443,13 +410,16 @@ function renderCharts() {
     if (ctxProd) {
         if (charts.prod) charts.prod.destroy();
         charts.prod = new Chart(ctxProd.getContext('2d'), {
-            type:'doughnut',
-            data:{ labels:productsList.map(p => p.description || p.prodcode || 'Item'), datasets:[{ data: productsList.map(() => 1), backgroundColor:['#8b5cf6','#ec4899','#14b8a6','#f59e0b'], borderWidth:2, borderColor:'#fff' }] },
-            options:opts
+            type: 'doughnut',
+            data: { labels: productsList.map(p => p.description || p.prodcode || 'Item'), datasets: [{ data: productsList.map(() => 1), backgroundColor: ['#8b5cf6', '#ec4899', '#14b8a6', '#f59e0b', '#6366f1'], borderWidth: 2, borderColor: '#fff' }] },
+            options: opts
         });
     }
 }
 
+// ============================================================
+//  DELETED TAB
+// ============================================================
 function switchDeletedTab(tab) {
     document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
@@ -462,42 +432,51 @@ function switchDeletedTab(tab) {
     }
 }
 
+// ============================================================
+//  CLOCK
+// ============================================================
 function updateClock() {
     const now = new Date();
-    const el = document.getElementById('nav-clock');
-    const de = document.getElementById('topbar-date');
+    const el  = document.getElementById('nav-clock');
+    const de  = document.getElementById('topbar-date');
     if (el) el.textContent = now.toLocaleTimeString('en-PH');
-    if (de) de.textContent = now.toLocaleDateString('en-PH', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+    if (de) de.textContent = now.toLocaleDateString('en-PH', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
 }
 updateClock();
 setInterval(updateClock, 1000);
 
+// ============================================================
+//  TOAST
+// ============================================================
 let toastTimer;
 function showToast(msg, type = '') {
     const el = document.getElementById('toast');
     if (!el) return;
     el.textContent = msg;
-    el.className = 'toast show' + (type ? ` toast-${type}` : '');
+    el.className   = 'toast show' + (type ? ` toast-${type}` : '');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
 }
 
-window.selectLoginRole = selectLoginRole;
-window.handleLogin = handleLogin;
+// ============================================================
+//  MODAL BACKDROP CLICK
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const backdrop = document.getElementById('modal-create');
+    if (backdrop) backdrop.addEventListener('click', e => { if (e.target === backdrop) closeCreateModal(); });
+});
+
+// ============================================================
+//  EXPOSE TO GLOBAL SCOPE (needed for onclick="" in HTML)
+// ============================================================
+window.selectLoginRole  = selectLoginRole;
+window.handleLogin      = handleLogin;
 window.signInWithGoogle = signInWithGoogle;
-window.switchPage = switchPage;
-window.openCreateModal = openCreateModal;
+window.switchPage       = switchPage;
+window.openCreateModal  = openCreateModal;
 window.closeCreateModal = closeCreateModal;
-window.autoFillPrice = autoFillPrice;
-window.saveTransaction = saveTransaction;
+window.autoFillPrice    = autoFillPrice;
+window.saveTransaction  = saveTransaction;
 window.filterTransactions = filterTransactions;
 window.switchDeletedTab = switchDeletedTab;
 
-window.supabase = supabase;
-
-document.addEventListener('DOMContentLoaded', () => {
-    const backdrop = document.getElementById('modal-create');
-    if (backdrop) {
-        backdrop.addEventListener('click', e => { if (e.target === backdrop) closeCreateModal(); });
-    }
-});
