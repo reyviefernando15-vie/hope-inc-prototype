@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/Hope-inc-prototype/',
+  base: '/hope-inc-prototype/',
   build: {
     outDir: 'dist',
     rollupOptions: {
