@@ -28,15 +28,16 @@ The Hope Inc. Sales Management System provides businesses with tools to:
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | React 18 + Vite |
+| Frontend | HTML5 | 
 | Styling | Tailwind CSS |
+| Build Tool | Vite |
 | Backend / Database | Supabase |
 | Database Engine | PostgreSQL |
-| Routing | React Router v6 |
-| Testing | Vitest + React Testing Library |
+| Authentication | Supabase Auth |
 | Language | JavaScript / JSX |
 | Package Manager | npm |
 | Version Control | Git + GitHub |
+
 
 ---
 
