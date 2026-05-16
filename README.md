@@ -122,7 +122,7 @@ npm run dev
 
 | Configuration | Details |
 |--------------|---------|
-| Platform | Vercel |
+| Platform | Github |
 | Production Branch | `main` |
 | Build Command | `npm run build` |
 | Output Directory | `dist` |
