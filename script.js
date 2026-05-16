@@ -83,14 +83,15 @@ function signInWithGoogle() {
 // Auto-detect returning Google OAuth session on page load
 supabase.auth.onAuthStateChange(async (event, session) => {
     if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
-        const u    = session.user;
-        const email = (u.email || '').toLowerCase();
-        const name  = u.user_metadata?.full_name || email || 'Google User';
-        const role  = getRoleByEmail(email);
+        const u       = session.user;
+        const email   = (u.email || '').toLowerCase();
+        const name    = u.user_metadata?.full_name || email || 'Google User';
+        const role    = getRoleByEmail(email);
+        const avatar  = u.user_metadata?.avatar_url || u.user_metadata?.picture || null;
         // Skip if already inside the app
         if (document.getElementById('main-app').style.display === 'flex') return;
         showToast(`Welcome, ${name.split(' ')[0]}! Signed in as ${role}`, 'success');
-        await finalizeLogin({ name, id: email, role });
+        await finalizeLogin({ name, id: email, role, avatar });
     }
 });
 
@@ -104,13 +105,26 @@ let rights = RIGHTS.USER;
 async function finalizeLogin(user) {
     currentRole = user.role || 'USER';
     rights = RIGHTS[currentRole] || RIGHTS.USER;
-    const name = user.name || 'User', id = user.id || 'ID';
-    document.getElementById('admin-prof-name').textContent     = name;
-    document.getElementById('admin-prof-id').textContent       = id;
-    document.getElementById('admin-role-title').textContent    = currentRole;
-    document.getElementById('dash-howdy-name').textContent     = name.split(' ')[0];
-    document.getElementById('topbar-username').textContent     = name.split(' ')[0];
-    document.getElementById('user-avatar-initial').textContent = (name||'U').charAt(0).toUpperCase();
+    const name   = user.name   || 'User';
+    const id     = user.id     || 'ID';
+    const avatar = user.avatar || null;
+    document.getElementById('admin-prof-name').textContent  = name;
+    document.getElementById('admin-prof-id').textContent    = id;
+    document.getElementById('admin-role-title').textContent = currentRole;
+    document.getElementById('dash-howdy-name').textContent  = name.split(' ')[0];
+    document.getElementById('topbar-username').textContent  = name.split(' ')[0];
+
+    // ── Profile photo (Google) or fallback initial ──
+    const avatarEl = document.getElementById('user-avatar-initial');
+    if (avatarEl) {
+        if (avatar) {
+            avatarEl.innerHTML = `<img src="${avatar}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;">`;
+            avatarEl.textContent = '';
+        } else {
+            avatarEl.textContent = (name || 'U').charAt(0).toUpperCase();
+        }
+    }
+
     // Role-based nav visibility
     ['nav-deleted','nav-usermgmt'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display=rights.VIEW_DELETED?'flex':'none'; });
     // Role-based button visibility
