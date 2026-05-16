@@ -59,7 +59,29 @@ async function handleLogin() {
     await finalizeLogin({ name: `${u.firstname||''} ${u.lastname||''}`.trim() || 'User', id: u.empno, role: selectedLoginRole });
 }
 
-function signInWithGoogle() { showToast('Google login disabled for this build.', 'error'); }
+function signInWithGoogle() {
+    // Save the selected role before redirect — we'll restore it after OAuth returns
+    sessionStorage.setItem('pendingRole', selectedLoginRole);
+    supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.href.split('?')[0].split('#')[0] }
+    }).then(({ error }) => {
+        if (error) showToast('Google login failed: ' + error.message, 'error');
+    });
+}
+
+// Auto-detect returning Google OAuth session on page load
+supabase.auth.onAuthStateChange(async (event, session) => {
+    if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
+        const u    = session.user;
+        const name = u.user_metadata?.full_name || u.email || 'Google User';
+        const savedRole = sessionStorage.getItem('pendingRole') || 'USER';
+        sessionStorage.removeItem('pendingRole');
+        // Skip if already inside the app
+        if (document.getElementById('main-app').style.display === 'flex') return;
+        await finalizeLogin({ name, id: u.email, role: savedRole });
+    }
+});
 
 const RIGHTS = {
     USER:       { SALES_ADD:true,  SALES_EDIT:false, SALES_DEL:false, VIEW_DELETED:false, USER_MGMT:false },
