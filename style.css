@@ -1555,7 +1555,92 @@ select.field-input {
   }
 }
 
-/* ── Date Filter Bar ─────────────────────────────────── */
+/* ── Topbar global filter group ─────────────────────────────── */
+.topbar-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.topbar-filter-group .date-filter-btn {
+  padding: 5px 10px;
+  font-size: .75rem;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: .15s;
+}
+
+.topbar-filter-group .date-filter-btn:hover {
+  background: white;
+  color: var(--text);
+}
+
+.topbar-filter-group .date-filter-btn.active {
+  background: var(--brand);
+  color: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+}
+
+/* ── Custom date range picker ───────────────────────────────── */
+.custom-range-picker {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 5px 10px;
+  animation: fadeIn .15s ease;
+}
+
+.custom-range-picker.active {
+  display: flex;
+}
+
+.range-input {
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 4px 8px;
+  font-size: .78rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  background: white;
+  outline: none;
+  cursor: pointer;
+}
+
+.range-input:focus {
+  border-color: var(--brand);
+}
+
+.range-sep {
+  color: var(--muted);
+  font-size: .8rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Hide filter group on very small mobile (show only inside topbar-right on scroll) */
+@media (max-width: 600px) {
+  .topbar-filter-group {
+    display: none;
+  }
+  .custom-range-picker {
+    display: none !important;
+  }
+}
+
 .date-filter-bar {
   display: flex;
   gap: 8px;

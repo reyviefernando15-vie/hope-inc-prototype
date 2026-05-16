@@ -180,13 +180,48 @@ function setupRealtime() {
         .subscribe();
 }
 
-// ── DATE FILTER ───────────────────────────────────────────────
+// ── DATE FILTER (GLOBAL) ───────────────────────────────────────
+let customRangeFrom = null;
+let customRangeTo   = null;
+
 function setDateFilter(filter) {
     currentDateFilter = filter;
+    customRangeFrom   = null;
+    customRangeTo     = null;
+    // Hide custom range picker
+    const rp = document.getElementById('custom-range-picker');
+    if (rp) rp.classList.remove('active');
+    // Update button states
     document.querySelectorAll('.date-filter-btn').forEach(b => b.classList.remove('active'));
     const btn = document.getElementById(`df-${filter}`);
     if (btn) btn.classList.add('active');
-    renderDashboard(filterByDate(allTransactions));
+    // Apply to both dashboard and transactions
+    const filtered = filterByDate(allTransactions.filter(t => !t.record_status || t.record_status === 'ACTIVE'));
+    renderDashboard(filtered);
+    renderSalesListFiltered(filtered);
+}
+
+function toggleCustomRange() {
+    const rp = document.getElementById('custom-range-picker');
+    if (!rp) return;
+    const isOpen = rp.classList.toggle('active');
+    document.querySelectorAll('.date-filter-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('df-custom');
+    if (btn) btn.classList.toggle('active', isOpen);
+    if (!isOpen) { setDateFilter('all'); }
+}
+
+function applyCustomRange() {
+    const from = document.getElementById('range-from')?.value;
+    const to   = document.getElementById('range-to')?.value;
+    if (!from && !to) return;
+    customRangeFrom   = from || null;
+    customRangeTo     = to   || null;
+    currentDateFilter = 'custom';
+    const filtered = filterByDate(allTransactions.filter(t => !t.record_status || t.record_status === 'ACTIVE'));
+    renderDashboard(filtered);
+    renderSalesListFiltered(filtered);
+    showToast(`📅 Showing ${filtered.length} records in range`, 'success');
 }
 
 function filterByDate(txns) {
@@ -202,6 +237,14 @@ function filterByDate(txns) {
     if (currentDateFilter === 'month') {
         const first = new Date(now.getFullYear(), now.getMonth(), 1);
         return txns.filter(t => new Date(t.salesdate) >= first);
+    }
+    if (currentDateFilter === 'custom') {
+        return txns.filter(t => {
+            const d = t.salesdate || '';
+            if (customRangeFrom && d < customRangeFrom) return false;
+            if (customRangeTo   && d > customRangeTo)   return false;
+            return true;
+        });
     }
     return txns;
 }
@@ -279,13 +322,15 @@ async function loadReferenceData() {
 
 async function loadTransactions() {
     let q = supabase.from(TABLE_TRANSACTIONS).select('*').order('salesdate', { ascending: true });
-    // USER role can only see ACTIVE records (RLS simulation)
     if (currentRole === 'USER') q = q.eq('record_status', 'ACTIVE');
     const { data, error } = await q;
     if (error) { showToast('Load error: ' + error.message, 'error'); allTransactions = []; }
     else allTransactions = data || [];
-    renderDashboard(filterByDate(allTransactions.filter(t=>!t.record_status||t.record_status==='ACTIVE')));
-    renderSalesList();
+    // Apply current date filter to both dashboard and transactions
+    const active   = allTransactions.filter(t => !t.record_status || t.record_status === 'ACTIVE');
+    const filtered = filterByDate(active);
+    renderDashboard(filtered);
+    renderSalesListFiltered(filtered);
 }
 
 // ── DASHBOARD RENDER ──────────────────────────────────────────
@@ -318,10 +363,15 @@ function renderDashboard(txns) {
 
 // ── SALES LIST RENDER ─────────────────────────────────────────
 function renderSalesList() {
+    const active = allTransactions.filter(t => !t.record_status || t.record_status === 'ACTIVE');
+    const filtered = filterByDate(active);
+    renderSalesListFiltered(filtered);
+}
+
+function renderSalesListFiltered(txns) {
     const bA = document.getElementById('sales-list-body');
     if (bA) bA.innerHTML = '';
-    const active = allTransactions.filter(t=>!t.record_status||t.record_status==='ACTIVE');
-    active.forEach(t => {
+    txns.forEach(t => {
         const total = Number(paymentsMap[t.transno] || 0);
         const delBtn = rights.SALES_DEL
             ? `<button onclick="softDelete('${t.transno}')" class="btn-icon-danger" title="Soft Delete">🗑</button>`
@@ -331,8 +381,8 @@ function renderSalesList() {
         tr.innerHTML = `<td class="sales-no-cell">#${t.transno}</td><td>${t.salesdate||'—'}</td><td class="col-stamp" style="font-size:.7rem;color:var(--muted)">${stamp}</td><td>${customerMap[t.custno]||t.custno||'Unknown'}</td><td>${employeeMap[t.empno]||t.empno||'Unknown'}</td><td class="amount-cell text-right">₱${total.toFixed(2)}</td><td class="text-center">${delBtn}</td>`;
         bA.appendChild(tr);
     });
-    if (bA && !bA.innerHTML) bA.innerHTML = '<tr><td colspan="7" class="empty-row">No sales records found.</td></tr>';
-    document.getElementById('txn-count-badge').textContent = `${active.length} record${active.length!==1?'s':''}`;
+    if (bA && !bA.innerHTML) bA.innerHTML = '<tr><td colspan="7" class="empty-row">No records found for this period.</td></tr>';
+    document.getElementById('txn-count-badge').textContent = `${txns.length} record${txns.length!==1?'s':''}`;
 }
 
 function renderDeletedItems() {
@@ -586,6 +636,8 @@ window.signInWithGoogle   = signInWithGoogle;
 window.switchPage         = switchPage;
 window.toggleSidebar      = toggleSidebar;
 window.setDateFilter      = setDateFilter;
+window.toggleCustomRange  = toggleCustomRange;
+window.applyCustomRange   = applyCustomRange;
 window.openCreateModal    = openCreateModal;
 window.closeCreateModal   = closeCreateModal;
 window.autoFillPrice      = autoFillPrice;
