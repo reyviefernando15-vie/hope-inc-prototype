@@ -18,6 +18,7 @@ const TABLE_SALESDETAIL = 'salesdetail';
 const TABLE_LOGS        = 'logs';
 
 let currentRole        = 'USER';
+let productPriceMap    = {};
 let selectedLoginRole  = 'USER';
 let allTransactions    = [];
 let customerMap        = {};
@@ -142,12 +143,13 @@ function switchPage(pageId) {
 //  DATA LOADING
 // ============================================================
 async function loadReferenceData() {
-    const [custRes, empRes, prodRes, paymentRes, detailRes] = await Promise.all([
+    const [custRes, empRes, prodRes, paymentRes, detailRes, priceRes] = await Promise.all([
         supabase.from(TABLE_CUSTOMERS).select('*'),
         supabase.from(TABLE_USERS).select('*'),
         supabase.from(TABLE_PRODUCTS).select('*'),
         supabase.from(TABLE_PAYMENTS).select('*'),
-        supabase.from(TABLE_SALESDETAIL).select('*')
+        supabase.from(TABLE_SALESDETAIL).select('*'),
+        supabase.from('pricehist').select('prodcode,unitprice,effdate').order('effdate', { ascending: true })
     ]);
 
     if (custRes.error || empRes.error || prodRes.error) {
@@ -161,6 +163,12 @@ async function loadReferenceData() {
     customerMap = Object.fromEntries(customersList.map(c => [c.custno, c.custname]));
     employeeMap = Object.fromEntries(employeesList.map(e => [e.empno, `${e.firstname || ''} ${e.lastname || ''}`.trim()]));
     productMap  = Object.fromEntries(productsList.map(p  => [p.prodcode, p.description]));
+
+    // Build product price map from pricehist (latest price per product)
+    productPriceMap = {};
+    (priceRes.data || []).forEach(ph => {
+        productPriceMap[ph.prodcode] = Number(ph.unitprice || 0);
+    });
 
     paymentsMap = {};
     (paymentRes.data || []).forEach(p => {
@@ -311,10 +319,10 @@ function closeCreateModal() {
 function autoFillPrice() {
     const prodId     = document.getElementById('select-product').value;
     const priceInput = document.getElementById('input-price');
-    const product    = productsList.find(p => p.prodcode === prodId);
     if (priceInput) {
+        const price = productPriceMap[prodId];
         priceInput.value = prodId
-            ? (product && product.unitprice ? '₱ ' + Number(product.unitprice).toFixed(2) : '₱ 0.00')
+            ? (price ? '₱ ' + price.toFixed(2) : '₱ 0.00')
             : '';
     }
 }
