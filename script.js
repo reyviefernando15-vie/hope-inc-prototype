@@ -118,9 +118,10 @@ async function finalizeLogin(user) {
     const avatarEl = document.getElementById('user-avatar-initial');
     if (avatarEl) {
         if (avatar) {
-            avatarEl.innerHTML = `<img src="${avatar}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;">`;
             avatarEl.textContent = '';
+            avatarEl.innerHTML = `<img src="${avatar}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;">`;
         } else {
+            avatarEl.innerHTML = '';
             avatarEl.textContent = (name || 'U').charAt(0).toUpperCase();
         }
     }
