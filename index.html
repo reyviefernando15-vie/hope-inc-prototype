@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Hope SMS — Sales Management System</title>
-  <meta name="description" content="Hope, Inc. Sales Management System — professional dashboard for managing transactions, analytics, and role-based access.">
+  <meta name="description"
+    content="Hope, Inc. Sales Management System — professional dashboard for managing transactions, analytics, and role-based access.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/hope-inc-prototype/assets/index-DwP1yaPg.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <script type="module" crossorigin src="/hope-inc-prototype/assets/index-Oc-_te8V.js"></script>
   <link rel="stylesheet" crossorigin href="/hope-inc-prototype/assets/index-D0BX6DxF.css">
 </head>
+
 <body>
 
   <!-- ============================================================ -->
@@ -55,13 +59,22 @@
           <div class="form-field">
             <label class="field-label">Employee ID</label>
             <div class="field-input-wrapper">
-              <svg class="field-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><path d="M9 12h6M9 16h4"/></svg>
+              <svg class="field-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="16" rx="2" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <path d="M9 12h6M9 16h4" />
+              </svg>
               <input type="text" id="login-email" class="field-input" placeholder="Enter Employee ID (or 'test')">
             </div>
           </div>
           <button id="btn-login" class="btn-login" onclick="handleLogin()">
             <span>Sign In Securely</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" width="16">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
 
@@ -72,7 +85,17 @@
 
         <!-- Google Login -->
         <button class="btn-google" onclick="signInWithGoogle()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px"><path d="M21 12.24c0-.83-.08-1.62-.22-2.4H12v4.56h5.5c-.24 1.28-1.02 2.36-2.17 3.08v2.56h3.5c2.05-1.88 3.24-4.68 3.24-7.8Z"/><path d="M12 22c2.7 0 4.95-.9 6.6-2.44l-3.5-2.56c-.97.66-2.22 1.05-3.1 1.05-2.38 0-4.4-1.6-5.12-3.76H3.32v2.36C4.96 19.86 8.22 22 12 22Z"/><path d="M6.88 13.29c-.22-.66-.34-1.36-.34-2.09 0-.73.12-1.43.34-2.09V6.75H3.32A9.96 9.96 0 0 0 2 11.2c0 1.66.4 3.23 1.12 4.65l3.76-2.56Z"/><path d="M12 4.5c1.47 0 2.8.5 3.84 1.48l2.88-2.88C16.92 1.52 14.7.5 12 .5 8.22.5 4.96 2.64 3.32 5.75l3.76 2.36C7.6 6.1 9.62 4.5 12 4.5Z"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px">
+            <path
+              d="M21 12.24c0-.83-.08-1.62-.22-2.4H12v4.56h5.5c-.24 1.28-1.02 2.36-2.17 3.08v2.56h3.5c2.05-1.88 3.24-4.68 3.24-7.8Z" />
+            <path
+              d="M12 22c2.7 0 4.95-.9 6.6-2.44l-3.5-2.56c-.97.66-2.22 1.05-3.1 1.05-2.38 0-4.4-1.6-5.12-3.76H3.32v2.36C4.96 19.86 8.22 22 12 22Z" />
+            <path
+              d="M6.88 13.29c-.22-.66-.34-1.36-.34-2.09 0-.73.12-1.43.34-2.09V6.75H3.32A9.96 9.96 0 0 0 2 11.2c0 1.66.4 3.23 1.12 4.65l3.76-2.56Z" />
+            <path
+              d="M12 4.5c1.47 0 2.8.5 3.84 1.48l2.88-2.88C16.92 1.52 14.7.5 12 .5 8.22.5 4.96 2.64 3.32 5.75l3.76 2.36C7.6 6.1 9.62 4.5 12 4.5Z" />
+          </svg>
           <span>Continue with Google</span>
         </button>
 
@@ -101,41 +124,85 @@
       <nav class="sidebar-nav">
         <div class="nav-section-label">OVERVIEW</div>
         <a id="nav-dashboard" class="nav-item active" onclick="switchPage('dashboard')">
-          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
           <span>Dashboard</span>
         </a>
 
         <div class="nav-section-label">RECORDS</div>
         <a id="nav-transactions" class="nav-item" onclick="switchPage('transactions')">
-          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg>
           <span>Transactions</span>
         </a>
         <a id="nav-reports" class="nav-item" onclick="switchPage('reports')">
-          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
           <span>Analytics</span>
         </a>
         <a id="nav-deleted" class="nav-item nav-danger" onclick="switchPage('deleted-items')" style="display:none;">
-          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+            <path d="M10 11v6M14 11v6" />
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+          </svg>
           <span>Deleted Items</span>
         </a>
 
         <div class="nav-section-label">LOOKUP</div>
         <a id="nav-customers" class="nav-item" onclick="switchPage('customers')">
-          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
           <span>Customers</span>
         </a>
         <a id="nav-employees" class="nav-item" onclick="switchPage('employees')">
-          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+          </svg>
           <span>Employees</span>
         </a>
         <a id="nav-products" class="nav-item" onclick="switchPage('products')">
-          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg>
           <span>Products</span>
         </a>
 
         <div class="nav-section-label">ADMIN</div>
         <a id="nav-usermgmt" class="nav-item" onclick="switchPage('user-management')" style="display:none;">
-          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            <line x1="19" y1="8" x2="19" y2="14" />
+            <line x1="16" y1="11" x2="22" y2="11" />
+          </svg>
           <span>User Management</span>
         </a>
       </nav>
@@ -153,7 +220,12 @@
         <div class="sidebar-footer-meta">
           <div id="nav-clock" class="footer-clock">00:00:00</div>
           <button class="btn-logout" onclick="location.reload()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" width="14">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
             Logout
           </button>
         </div>
@@ -188,9 +260,9 @@
           <!-- Date Filter -->
           <div class="date-filter-bar">
             <button id="df-today" class="date-filter-btn" onclick="setDateFilter('today')">Today</button>
-            <button id="df-week"  class="date-filter-btn" onclick="setDateFilter('week')">This Week</button>
+            <button id="df-week" class="date-filter-btn" onclick="setDateFilter('week')">This Week</button>
             <button id="df-month" class="date-filter-btn" onclick="setDateFilter('month')">This Month</button>
-            <button id="df-all"   class="date-filter-btn active" onclick="setDateFilter('all')">All Time</button>
+            <button id="df-all" class="date-filter-btn active" onclick="setDateFilter('all')">All Time</button>
           </div>
         </div>
 
@@ -198,7 +270,11 @@
         <div class="kpi-grid">
           <div class="kpi-card kpi-green">
             <div class="kpi-icon-wrap kpi-icon-green">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" width="22">
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
             </div>
             <div class="kpi-data">
               <div class="kpi-label">Total Sales Revenue</div>
@@ -208,7 +284,11 @@
           </div>
           <div class="kpi-card kpi-blue">
             <div class="kpi-icon-wrap kpi-icon-blue">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" width="22">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
             </div>
             <div class="kpi-data">
               <div class="kpi-label">Active Transactions</div>
@@ -218,7 +298,13 @@
           </div>
           <div class="kpi-card kpi-purple">
             <div class="kpi-icon-wrap kpi-icon-purple">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" width="22">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
             </div>
             <div class="kpi-data">
               <div class="kpi-label">Unique Customers</div>
@@ -228,7 +314,10 @@
           </div>
           <div class="kpi-card kpi-orange">
             <div class="kpi-icon-wrap kpi-icon-orange">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" width="22">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
             </div>
             <div class="kpi-data">
               <div class="kpi-label">Avg. Transaction Value</div>
@@ -257,7 +346,9 @@
                 </tr>
               </thead>
               <tbody id="dash-recent-body">
-                <tr><td colspan="6" class="empty-row">Loading records…</td></tr>
+                <tr>
+                  <td colspan="6" class="empty-row">Loading records…</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -272,7 +363,11 @@
             <p class="page-subtitle">Manage and monitor all active sales transactions.</p>
           </div>
           <button class="btn-primary" onclick="openCreateModal()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" width="16">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
             New Transaction
           </button>
         </div>
@@ -280,8 +375,13 @@
         <!-- Filters -->
         <div class="filters-bar">
           <div class="search-box">
-            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" id="txn-search" class="search-input" placeholder="Search by customer, employee…" oninput="filterTransactions()">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" width="16">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input type="text" id="txn-search" class="search-input" placeholder="Search by customer, employee…"
+              oninput="filterTransactions()">
           </div>
           <select id="filter-employee" class="filter-select" onchange="filterTransactions()">
             <option value="">All Employees</option>
@@ -307,7 +407,9 @@
                 </tr>
               </thead>
               <tbody id="sales-list-body">
-                <tr><td colspan="7" class="empty-row">Loading records…</td></tr>
+                <tr>
+                  <td colspan="7" class="empty-row">Loading records…</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -356,9 +458,17 @@
           </div>
           <div class="table-wrapper">
             <table class="data-table">
-              <thead><tr><th style="width:50px">#</th><th>Product</th><th class="text-right">Total Qty Sold</th></tr></thead>
+              <thead>
+                <tr>
+                  <th style="width:50px">#</th>
+                  <th>Product</th>
+                  <th class="text-right">Total Qty Sold</th>
+                </tr>
+              </thead>
               <tbody id="top-products-body">
-                <tr><td colspan="3" class="empty-row">Loading…</td></tr>
+                <tr>
+                  <td colspan="3" class="empty-row">Loading…</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -375,7 +485,8 @@
         </div>
 
         <div class="tab-bar">
-          <button class="tab-pill active" id="tabpill-txn" onclick="switchDeletedTab('transactions')">Transactions</button>
+          <button class="tab-pill active" id="tabpill-txn"
+            onclick="switchDeletedTab('transactions')">Transactions</button>
           <button class="tab-pill" id="tabpill-line" onclick="switchDeletedTab('line-items')">Line Items</button>
         </div>
 
@@ -383,11 +494,20 @@
           <div class="content-card">
             <div class="table-wrapper">
               <table class="data-table">
-                <thead><tr>
-                  <th>Sales No.</th><th>Date</th><th>Customer</th><th>Employee</th><th class="text-right">Total</th><th class="text-center">Recover</th>
-                </tr></thead>
+                <thead>
+                  <tr>
+                    <th>Sales No.</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Employee</th>
+                    <th class="text-right">Total</th>
+                    <th class="text-center">Recover</th>
+                  </tr>
+                </thead>
                 <tbody id="deleted-sales-body">
-                  <tr><td colspan="6" class="empty-row">No deleted transactions.</td></tr>
+                  <tr>
+                    <td colspan="6" class="empty-row">No deleted transactions.</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -398,9 +518,17 @@
           <div class="content-card">
             <div class="table-wrapper">
               <table class="data-table">
-                <thead><tr><th>Trans No.</th><th>Product</th><th>Quantity</th></tr></thead>
+                <thead>
+                  <tr>
+                    <th>Trans No.</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                  </tr>
+                </thead>
                 <tbody id="deleted-lines-body">
-                  <tr><td colspan="3" class="empty-row">No deleted line items.</td></tr>
+                  <tr>
+                    <td colspan="3" class="empty-row">No deleted line items.</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -410,58 +538,120 @@
 
       <!-- =================== CUSTOMERS LOOKUP =================== -->
       <section id="customers" class="page-section">
-        <div class="page-header"><div>
-          <h1>Customers</h1>
-          <p class="page-subtitle"><span class="lookup-badge">📖 Read-Only Reference Table</span></p>
-        </div></div>
-        <div class="content-card"><div class="table-wrapper">
-          <table class="data-table">
-            <thead><tr><th>Cust No.</th><th>Name</th><th>Address</th><th>City</th></tr></thead>
-            <tbody id="lookup-cust-body"><tr><td colspan="4" class="empty-row">Loading…</td></tr></tbody>
-          </table>
-        </div></div>
+        <div class="page-header">
+          <div>
+            <h1>Customers</h1>
+            <p class="page-subtitle"><span class="lookup-badge">📖 Read-Only Reference Table</span></p>
+          </div>
+        </div>
+        <div class="content-card">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Cust No.</th>
+                  <th>Name</th>
+                  <th>Address</th>
+                  <th>City</th>
+                </tr>
+              </thead>
+              <tbody id="lookup-cust-body">
+                <tr>
+                  <td colspan="4" class="empty-row">Loading…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <!-- =================== EMPLOYEES LOOKUP =================== -->
       <section id="employees" class="page-section">
-        <div class="page-header"><div>
-          <h1>Employees</h1>
-          <p class="page-subtitle"><span class="lookup-badge">📖 Read-Only Reference Table</span></p>
-        </div></div>
-        <div class="content-card"><div class="table-wrapper">
-          <table class="data-table">
-            <thead><tr><th>Emp No.</th><th>Last Name</th><th>First Name</th><th>Gender</th><th>Birthdate</th><th>Hire Date</th></tr></thead>
-            <tbody id="lookup-emp-body"><tr><td colspan="6" class="empty-row">Loading…</td></tr></tbody>
-          </table>
-        </div></div>
+        <div class="page-header">
+          <div>
+            <h1>Employees</h1>
+            <p class="page-subtitle"><span class="lookup-badge">📖 Read-Only Reference Table</span></p>
+          </div>
+        </div>
+        <div class="content-card">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Emp No.</th>
+                  <th>Last Name</th>
+                  <th>First Name</th>
+                  <th>Gender</th>
+                  <th>Birthdate</th>
+                  <th>Hire Date</th>
+                </tr>
+              </thead>
+              <tbody id="lookup-emp-body">
+                <tr>
+                  <td colspan="6" class="empty-row">Loading…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <!-- =================== PRODUCTS LOOKUP =================== -->
       <section id="products" class="page-section">
-        <div class="page-header"><div>
-          <h1>Products</h1>
-          <p class="page-subtitle"><span class="lookup-badge">📖 Read-Only Reference Table</span></p>
-        </div></div>
-        <div class="content-card"><div class="table-wrapper">
-          <table class="data-table">
-            <thead><tr><th>Prod Code</th><th>Description</th><th>Unit</th></tr></thead>
-            <tbody id="lookup-prod-body"><tr><td colspan="3" class="empty-row">Loading…</td></tr></tbody>
-          </table>
-        </div></div>
+        <div class="page-header">
+          <div>
+            <h1>Products</h1>
+            <p class="page-subtitle"><span class="lookup-badge">📖 Read-Only Reference Table</span></p>
+          </div>
+        </div>
+        <div class="content-card">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Prod Code</th>
+                  <th>Description</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody id="lookup-prod-body">
+                <tr>
+                  <td colspan="3" class="empty-row">Loading…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <!-- =================== USER MANAGEMENT =================== -->
       <section id="user-management" class="page-section">
-        <div class="page-header"><div>
-          <h1>User Management</h1>
-          <p class="page-subtitle">Activate or deactivate employee accounts. SUPERADMIN accounts are protected.</p>
-        </div></div>
-        <div class="content-card"><div class="table-wrapper">
-          <table class="data-table">
-            <thead><tr><th>Emp No.</th><th>Name</th><th>Hire Date</th><th>Status</th><th class="text-center">Action</th></tr></thead>
-            <tbody id="usermgmt-body"><tr><td colspan="5" class="empty-row">Loading…</td></tr></tbody>
-          </table>
-        </div></div>
+        <div class="page-header">
+          <div>
+            <h1>User Management</h1>
+            <p class="page-subtitle">Activate or deactivate employee accounts. SUPERADMIN accounts are protected.</p>
+          </div>
+        </div>
+        <div class="content-card">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Emp No.</th>
+                  <th>Name</th>
+                  <th>Hire Date</th>
+                  <th>Status</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="usermgmt-body">
+                <tr>
+                  <td colspan="5" class="empty-row">Loading…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
     </main>
@@ -506,11 +696,14 @@
         <div class="modal-form-row two-col">
           <div class="form-field">
             <label class="field-label">Product</label>
-            <select id="select-product" class="field-input" onchange="autoFillPrice()"><option value="">— Select Product —</option></select>
+            <select id="select-product" class="field-input" onchange="autoFillPrice()">
+              <option value="">— Select Product —</option>
+            </select>
           </div>
           <div class="form-field">
             <label class="field-label">Unit Price <span class="field-label-badge">Auto-filled · Read-only</span></label>
-            <input type="text" id="input-price" class="field-input price-field" placeholder="Select a product…" readonly>
+            <input type="text" id="input-price" class="field-input price-field" placeholder="Select a product…"
+              readonly>
           </div>
         </div>
 
@@ -529,7 +722,10 @@
       <div class="modal-box-footer">
         <button class="btn-secondary" onclick="closeCreateModal()">Cancel</button>
         <button class="btn-primary" onclick="saveTransaction()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" width="15">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
           Save Transaction
         </button>
       </div>
@@ -543,4 +739,5 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
+
 </html>
