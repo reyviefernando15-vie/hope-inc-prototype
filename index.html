@@ -1,17 +1,473 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hope SMS — Sales Management System</title>
-    <meta name="description" content="Hope, Inc. Sales Management System — professional dashboard for managing transactions, analytics, and role-based access." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="/hope-inc-prototype/assets/index-6_5kKhUE.js"></script>
-    <link rel="stylesheet" crossorigin href="/hope-inc-prototype/assets/index-YDLwu1eN.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Hope SMS — Sales Management System</title>
+  <meta name="description" content="Hope, Inc. Sales Management System — professional dashboard for managing transactions, analytics, and role-based access.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/hope-inc-prototype/assets/index-CvesX0g0.js"></script>
+  <link rel="stylesheet" crossorigin href="/hope-inc-prototype/assets/index-DBzq79YP.css">
+</head>
+<body>
+
+  <!-- ============================================================ -->
+  <!--  LOGIN SCREEN                                                  -->
+  <!-- ============================================================ -->
+  <div id="screen-signin" class="auth-screen">
+    <div class="auth-bg-pattern"></div>
+
+    <div class="auth-brand-panel">
+      <div class="auth-brand-logo">H</div>
+      <h1 class="auth-brand-name">Hope, Inc.</h1>
+      <p class="auth-brand-tagline">Sales Management System</p>
+      <div class="auth-brand-dots">
+        <span class="dot dot-active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+
+    <div class="auth-form-panel">
+      <div class="auth-card">
+        <div class="auth-card-header">
+          <h2>Identity Gateway</h2>
+          <p>Select your role and authenticate to continue</p>
+        </div>
+
+        <!-- Role Tabs -->
+        <div class="role-tabs">
+          <button id="tab-USER" class="role-tab active" onclick="selectLoginRole('USER')">
+            <span class="role-tab-label">Sales Agent</span>
+          </button>
+          <button id="tab-ADMIN" class="role-tab" onclick="selectLoginRole('ADMIN')">
+            <span class="role-tab-label">Manager</span>
+          </button>
+          <button id="tab-SUPERADMIN" class="role-tab" onclick="selectLoginRole('SUPERADMIN')">
+            <span class="role-tab-label">Owner</span>
+          </button>
+        </div>
+
+        <!-- Login Form -->
+        <div class="auth-form">
+          <div class="form-field">
+            <label class="field-label">Employee ID</label>
+            <div class="field-input-wrapper">
+              <svg class="field-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><path d="M9 12h6M9 16h4"/></svg>
+              <input type="text" id="login-email" class="field-input" placeholder="Enter Employee ID (or 'test')">
+            </div>
+          </div>
+          <button id="btn-login" class="btn-login" onclick="handleLogin()">
+            <span>Sign In Securely</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="auth-divider">
+          <span>or continue with</span>
+        </div>
+
+        <!-- Google Login -->
+        <button class="btn-google" onclick="signInWithGoogle()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px"><path d="M21 12.24c0-.83-.08-1.62-.22-2.4H12v4.56h5.5c-.24 1.28-1.02 2.36-2.17 3.08v2.56h3.5c2.05-1.88 3.24-4.68 3.24-7.8Z"/><path d="M12 22c2.7 0 4.95-.9 6.6-2.44l-3.5-2.56c-.97.66-2.22 1.05-3.1 1.05-2.38 0-4.4-1.6-5.12-3.76H3.32v2.36C4.96 19.86 8.22 22 12 22Z"/><path d="M6.88 13.29c-.22-.66-.34-1.36-.34-2.09 0-.73.12-1.43.34-2.09V6.75H3.32A9.96 9.96 0 0 0 2 11.2c0 1.66.4 3.23 1.12 4.65l3.76-2.56Z"/><path d="M12 4.5c1.47 0 2.8.5 3.84 1.48l2.88-2.88C16.92 1.52 14.7.5 12 .5 8.22.5 4.96 2.64 3.32 5.75l3.76 2.36C7.6 6.1 9.62 4.5 12 4.5Z"/></svg>
+          <span>Continue with Google</span>
+        </button>
+
+        <p class="auth-footer-note">Protected by Supabase &nbsp;🔒</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!--  MAIN APPLICATION                                              -->
+  <!-- ============================================================ -->
+  <div id="main-app" class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Brand -->
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">H</div>
+        <div class="sidebar-brand-text">
+          <div class="sidebar-brand-name">Hope, Inc.</div>
+          <div class="sidebar-brand-sub">Sales Management</div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">OVERVIEW</div>
+        <a id="nav-dashboard" class="nav-item active" onclick="switchPage('dashboard')">
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Dashboard</span>
+        </a>
+
+        <div class="nav-section-label">RECORDS</div>
+        <a id="nav-transactions" class="nav-item" onclick="switchPage('transactions')">
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>Transactions</span>
+        </a>
+        <a id="nav-reports" class="nav-item" onclick="switchPage('reports')">
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Analytics</span>
+        </a>
+        <a id="nav-deleted" class="nav-item nav-danger" onclick="switchPage('deleted-items')" style="display:none;">
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          <span>Deleted Items</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar" id="user-avatar-initial">U</div>
+          <div class="user-info">
+            <div id="admin-prof-name" class="user-name">User</div>
+            <div id="admin-prof-id" class="user-id">ID-000</div>
+          </div>
+          <span class="role-badge" id="admin-role-title">USER</span>
+        </div>
+        <div class="sidebar-footer-meta">
+          <div id="nav-clock" class="footer-clock">00:00:00</div>
+          <button class="btn-logout" onclick="location.reload()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="main-content">
+
+      <!-- TOP BAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2 id="topbar-title" class="topbar-title">Dashboard</h2>
+          <div id="topbar-breadcrumb" class="topbar-breadcrumb">Home / Dashboard</div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-date" id="topbar-date"></div>
+          <div class="topbar-user-chip">
+            <div class="chip-dot"></div>
+            <span id="topbar-username">User</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- =================== DASHBOARD =================== -->
+      <section id="dashboard" class="page-section active">
+        <div class="page-header">
+          <div>
+            <h1>Good day, <span id="dash-howdy-name" class="text-accent">User</span>!</h1>
+            <p class="page-subtitle">Here's what's happening with your sales today.</p>
+          </div>
+          <!-- Date Filter -->
+          <div class="date-filter-bar">
+            <button id="df-today" class="date-filter-btn" onclick="setDateFilter('today')">Today</button>
+            <button id="df-week"  class="date-filter-btn" onclick="setDateFilter('week')">This Week</button>
+            <button id="df-month" class="date-filter-btn" onclick="setDateFilter('month')">This Month</button>
+            <button id="df-all"   class="date-filter-btn active" onclick="setDateFilter('all')">All Time</button>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-green">
+            <div class="kpi-icon-wrap kpi-icon-green">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="kpi-data">
+              <div class="kpi-label">Total Sales Revenue</div>
+              <div class="kpi-value">₱<span id="dash-today-sales">0.00</span></div>
+              <div class="kpi-sub">Active transactions only</div>
+            </div>
+          </div>
+          <div class="kpi-card kpi-blue">
+            <div class="kpi-icon-wrap kpi-icon-blue">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="kpi-data">
+              <div class="kpi-label">Active Transactions</div>
+              <div class="kpi-value" id="dash-today-total">0</div>
+              <div class="kpi-sub">Records logged</div>
+            </div>
+          </div>
+          <div class="kpi-card kpi-purple">
+            <div class="kpi-icon-wrap kpi-icon-purple">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="kpi-data">
+              <div class="kpi-label">Unique Customers</div>
+              <div class="kpi-value" id="dash-today-customers">0</div>
+              <div class="kpi-sub">Distinct buyers</div>
+            </div>
+          </div>
+          <div class="kpi-card kpi-orange">
+            <div class="kpi-icon-wrap kpi-icon-orange">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="kpi-data">
+              <div class="kpi-label">Avg. Transaction Value</div>
+              <div class="kpi-value">₱<span id="dash-avg-value">0.00</span></div>
+              <div class="kpi-sub">Per active record</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Transactions Preview -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3 class="card-title">Recent Transactions</h3>
+            <button class="btn-text" onclick="switchPage('transactions')">View All →</button>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table" id="dash-recent-table">
+              <thead>
+                <tr>
+                  <th>Sales No.</th>
+                  <th>Date</th>
+                  <th class="col-stamp">Time Stamp</th>
+                  <th>Customer</th>
+                  <th>Employee</th>
+                  <th class="text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody id="dash-recent-body">
+                <tr><td colspan="6" class="empty-row">Loading records…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================== TRANSACTIONS =================== -->
+      <section id="transactions" class="page-section">
+        <div class="page-header">
+          <div>
+            <h1>Sales Registry</h1>
+            <p class="page-subtitle">Manage and monitor all active sales transactions.</p>
+          </div>
+          <button class="btn-primary" onclick="openCreateModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Transaction
+          </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <div class="search-box">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="txn-search" class="search-input" placeholder="Search by customer, employee…" oninput="filterTransactions()">
+          </div>
+          <select id="filter-employee" class="filter-select" onchange="filterTransactions()">
+            <option value="">All Employees</option>
+            <option>Worker, Alice</option>
+            <option>Manager, Bob</option>
+            <option>Cashier, Charlie</option>
+          </select>
+          <div class="record-badge" id="txn-count-badge">0 records</div>
+        </div>
+
+        <div class="content-card">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Sales No.</th>
+                  <th>Date</th>
+                  <th class="col-stamp">Time Stamp</th>
+                  <th>Customer</th>
+                  <th>Employee</th>
+                  <th class="text-right">Total</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sales-list-body">
+                <tr><td colspan="7" class="empty-row">Loading records…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================== ANALYTICS =================== -->
+      <section id="reports" class="page-section">
+        <div class="page-header">
+          <div>
+            <h1>Analytics</h1>
+            <p class="page-subtitle">Real-time business performance and sales insights.</p>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <div class="content-card chart-card-tall">
+            <div class="card-header">
+              <h3 class="card-title">Sales by Employee</h3>
+              <span class="card-badge">Bar Chart</span>
+            </div>
+            <div class="chart-box"><canvas id="chartEmployee"></canvas></div>
+          </div>
+          <div class="content-card chart-card-tall">
+            <div class="card-header">
+              <h3 class="card-title">Customer Revenue Share</h3>
+              <span class="card-badge">Pie Chart</span>
+            </div>
+            <div class="chart-box"><canvas id="chartCustomer"></canvas></div>
+          </div>
+        </div>
+
+        <div class="content-card" style="margin-top: 24px;">
+          <div class="card-header">
+            <h3 class="card-title">Top Products by Volume</h3>
+            <span class="card-badge">Doughnut</span>
+          </div>
+          <div class="chart-box" style="max-width: 480px; margin: 0 auto;"><canvas id="chartProducts"></canvas></div>
+        </div>
+
+        <!-- Top Products Table -->
+        <div class="content-card" style="margin-top: 24px;">
+          <div class="card-header">
+            <h3 class="card-title">🏆 Best Sellers — Top 10 Products</h3>
+            <span class="card-badge">By Qty Sold</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th style="width:50px">#</th><th>Product</th><th class="text-right">Total Qty Sold</th></tr></thead>
+              <tbody id="top-products-body">
+                <tr><td colspan="3" class="empty-row">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================== DELETED ITEMS =================== -->
+      <section id="deleted-items" class="page-section">
+        <div class="page-header">
+          <div>
+            <h1 class="text-danger">Deleted Records</h1>
+            <p class="page-subtitle">Archived vault — inactive and soft-deleted entries.</p>
+          </div>
+        </div>
+
+        <div class="tab-bar">
+          <button class="tab-pill active" id="tabpill-txn" onclick="switchDeletedTab('transactions')">Transactions</button>
+          <button class="tab-pill" id="tabpill-line" onclick="switchDeletedTab('line-items')">Line Items</button>
+        </div>
+
+        <div id="tab-transactions" class="tab-pane active">
+          <div class="content-card">
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Sales No.</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th class="text-right">Total</th>
+                    <th class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="deleted-sales-body">
+                  <tr><td colspan="5" class="empty-row">No deleted records.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-line-items" class="tab-pane">
+          <div class="content-card">
+            <div class="empty-state">
+              <div class="empty-icon" style="font-size:2rem;">[ ]</div>
+              <div class="empty-title">No Deleted Line Items</div>
+              <div class="empty-sub">Soft-deleted line items will appear here.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============================================================ -->
+  <!--  CREATE TRANSACTION MODAL                                      -->
+  <!-- ============================================================ -->
+  <div id="modal-create" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-box-header">
+        <div>
+          <h3 class="modal-box-title">New Transaction</h3>
+          <p class="modal-box-sub">All fields are required to save</p>
+        </div>
+        <button class="modal-close-btn" onclick="closeCreateModal()">✕</button>
+      </div>
+      <div class="modal-box-body">
+
+        <div class="modal-form-row">
+          <div class="form-field">
+            <label class="field-label">Sales No.</label>
+            <input type="text" class="field-input auto-field" value="Auto-Generated by System" disabled>
+          </div>
+        </div>
+
+        <div class="modal-form-row two-col">
+          <div class="form-field">
+            <label class="field-label">Customer</label>
+            <select id="select-customer" class="field-input">
+              <option value="">— Select Customer —</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="field-label">Employee</label>
+            <select id="select-employee" class="field-input">
+              <option value="">— Select Employee —</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-form-row two-col">
+          <div class="form-field">
+            <label class="field-label">Product</label>
+            <select id="select-product" class="field-input" onchange="autoFillPrice()"><option value="">— Select Product —</option></select>
+          </div>
+          <div class="form-field">
+            <label class="field-label">Unit Price <span class="field-label-badge">Auto-filled · Read-only</span></label>
+            <input type="text" id="input-price" class="field-input price-field" placeholder="Select a product…" readonly>
+          </div>
+        </div>
+
+        <div class="modal-form-row two-col">
+          <div class="form-field">
+            <label class="field-label">Quantity</label>
+            <input type="number" id="input-quantity" class="field-input" value="1" min="1" placeholder="Enter quantity">
+          </div>
+          <div class="form-field">
+            <label class="field-label">Date <span class="field-label-badge">Auto-set</span></label>
+            <input type="text" class="field-input auto-field" id="modal-date-display" disabled>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-box-footer">
+        <button class="btn-secondary" onclick="closeCreateModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveTransaction()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15"><polyline points="20 6 9 17 4 12"/></svg>
+          Save Transaction
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
 </html>
