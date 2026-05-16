@@ -46,17 +46,31 @@ async function handleLogin() {
         await finalizeLogin({ name: 'Demo ' + selectedLoginRole, id: 'T-001', role: selectedLoginRole });
         return;
     }
-    const { data, error } = await supabase.from(TABLE_USERS).select('empno,firstname,lastname').eq('empno', val).limit(1);
+    const { data, error } = await supabase.from(TABLE_USERS).select('empno,firstname,lastname,record_status').eq('empno', val).limit(1);
     if (error) { showToast('Error: ' + error.message, 'error'); if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; } return; }
     if (!data || !data.length) { showToast("ID not found. Use 'test' to bypass.", 'error'); if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; } return; }
     const u = data[0];
+    // Login Guard — block inactive accounts
+    if (u.record_status === 'INACTIVE') {
+        showToast('⛔ Account is inactive. Contact Admin.', 'error');
+        if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; }
+        return;
+    }
     await finalizeLogin({ name: `${u.firstname||''} ${u.lastname||''}`.trim() || 'User', id: u.empno, role: selectedLoginRole });
 }
 
 function signInWithGoogle() { showToast('Google login disabled for this build.', 'error'); }
 
+const RIGHTS = {
+    USER:       { SALES_ADD:true,  SALES_EDIT:false, SALES_DEL:false, VIEW_DELETED:false, USER_MGMT:false },
+    ADMIN:      { SALES_ADD:true,  SALES_EDIT:true,  SALES_DEL:false, VIEW_DELETED:true,  USER_MGMT:true  },
+    SUPERADMIN: { SALES_ADD:true,  SALES_EDIT:true,  SALES_DEL:true,  VIEW_DELETED:true,  USER_MGMT:true  },
+};
+let rights = RIGHTS.USER;
+
 async function finalizeLogin(user) {
     currentRole = user.role || 'USER';
+    rights = RIGHTS[currentRole] || RIGHTS.USER;
     const name = user.name || 'User', id = user.id || 'ID';
     document.getElementById('admin-prof-name').textContent     = name;
     document.getElementById('admin-prof-id').textContent       = id;
@@ -64,8 +78,10 @@ async function finalizeLogin(user) {
     document.getElementById('dash-howdy-name').textContent     = name.split(' ')[0];
     document.getElementById('topbar-username').textContent     = name.split(' ')[0];
     document.getElementById('user-avatar-initial').textContent = (name||'U').charAt(0).toUpperCase();
-    const nd = document.getElementById('nav-deleted');
-    if (nd) nd.style.display = currentRole === 'USER' ? 'none' : 'flex';
+    // Role-based nav visibility
+    ['nav-deleted','nav-usermgmt'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display=rights.VIEW_DELETED?'flex':'none'; });
+    // Role-based button visibility
+    const btnNew = document.getElementById('btn-new-txn'); if(btnNew) btnNew.style.display = rights.SALES_ADD ? '' : 'none';
     try { await supabase.from(TABLE_LOGS).insert([{ name, role: currentRole, action:'Login', timestamp: new Date().toLocaleString(), rawDate: new Date().toISOString() }]); } catch(_) {}
     await enterApp();
 }
@@ -123,18 +139,24 @@ function filterByDate(txns) {
 
 // ── NAVIGATION ────────────────────────────────────────────────
 function switchPage(pageId) {
-    if (pageId === 'deleted-items' && currentRole === 'USER') { showToast('Access denied.', 'error'); return; }
-    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if ((pageId==='deleted-items'||pageId==='user-management') && !rights.VIEW_DELETED) { showToast('Access denied.','error'); return; }
+    document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
     const page = document.getElementById(pageId);
     if (page) page.classList.add('active');
-    const nav = document.getElementById(`nav-${pageId === 'deleted-items' ? 'deleted' : pageId.split('-')[0]}`);
-    if (nav) nav.classList.add('active');
-    const titles = { dashboard:'Dashboard', transactions:'Sales Registry', reports:'Analytics', 'deleted-items':'Deleted Records' };
-    const crumbs = { dashboard:'Home / Dashboard', transactions:'Records / Transactions', reports:'Records / Analytics', 'deleted-items':'Records / Deleted' };
-    document.getElementById('topbar-title').textContent      = titles[pageId] || '';
-    document.getElementById('topbar-breadcrumb').textContent = crumbs[pageId] || '';
-    if (pageId === 'reports') { renderCharts(); renderTopProducts(); }
+    const navMap = { 'deleted-items':'nav-deleted','user-management':'nav-usermgmt','customers':'nav-customers','employees':'nav-employees','products':'nav-products' };
+    const navId = navMap[pageId] || `nav-${pageId.split('-')[0]}`;
+    const nav = document.getElementById(navId); if (nav) nav.classList.add('active');
+    const titles = { dashboard:'Dashboard', transactions:'Sales Registry', reports:'Analytics', 'deleted-items':'Deleted Records', 'user-management':'User Management', customers:'Customers', employees:'Employees', products:'Products' };
+    const crumbs = { dashboard:'Home / Dashboard', transactions:'Records / Transactions', reports:'Records / Analytics', 'deleted-items':'Records / Deleted', 'user-management':'Admin / Users', customers:'Lookup / Customers', employees:'Lookup / Employees', products:'Lookup / Products' };
+    document.getElementById('topbar-title').textContent      = titles[pageId]||pageId;
+    document.getElementById('topbar-breadcrumb').textContent = crumbs[pageId]||'';
+    if (pageId==='reports')          { renderCharts(); renderTopProducts(); }
+    if (pageId==='customers')        renderLookup('customers');
+    if (pageId==='employees')        renderLookup('employees');
+    if (pageId==='products')         renderLookup('products');
+    if (pageId==='user-management')  renderUserManagement();
+    if (pageId==='deleted-items')    renderDeletedItems();
 }
 
 // ── DATA LOADING ──────────────────────────────────────────────
@@ -166,11 +188,14 @@ async function loadReferenceData() {
 }
 
 async function loadTransactions() {
-    const { data, error } = await supabase.from(TABLE_TRANSACTIONS).select('*').order('salesdate', { ascending: true });
+    let q = supabase.from(TABLE_TRANSACTIONS).select('*').order('salesdate', { ascending: true });
+    // USER role can only see ACTIVE records (RLS simulation)
+    if (currentRole === 'USER') q = q.eq('record_status', 'ACTIVE');
+    const { data, error } = await q;
     if (error) { showToast('Load error: ' + error.message, 'error'); allTransactions = []; }
     else allTransactions = data || [];
-    renderDashboard(filterByDate(allTransactions));
-    renderSalesList(allTransactions);
+    renderDashboard(filterByDate(allTransactions.filter(t=>!t.record_status||t.record_status==='ACTIVE')));
+    renderSalesList();
 }
 
 // ── DASHBOARD RENDER ──────────────────────────────────────────
@@ -202,34 +227,71 @@ function renderDashboard(txns) {
 }
 
 // ── SALES LIST RENDER ─────────────────────────────────────────
-function renderSalesList(txns) {
+function renderSalesList() {
     const bA = document.getElementById('sales-list-body');
-    const bD = document.getElementById('deleted-sales-body');
     if (bA) bA.innerHTML = '';
-    if (bD) bD.innerHTML = '';
-    txns.forEach(t => {
+    const active = allTransactions.filter(t=>!t.record_status||t.record_status==='ACTIVE');
+    active.forEach(t => {
         const total = Number(paymentsMap[t.transno] || 0);
+        const delBtn = rights.SALES_DEL
+            ? `<button onclick="softDelete('${t.transno}')" class="btn-icon-danger" title="Soft Delete">🗑</button>`
+            : `<span style="font-size:.75rem;color:var(--muted);">—</span>`;
+        const stamp = currentRole!=='USER' ? (t.stamp||'') : '';
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td class="sales-no-cell">#${t.transno}</td><td>${t.salesdate||'—'}</td><td class="col-stamp"></td><td>${customerMap[t.custno]||t.custno||'Unknown'}</td><td>${employeeMap[t.empno]||t.empno||'Unknown'}</td><td class="amount-cell text-right">₱${total.toFixed(2)}</td><td class="text-center"><span style="font-size:.75rem;color:var(--muted);">—</span></td>`;
-        if (bA) bA.appendChild(tr);
+        tr.innerHTML = `<td class="sales-no-cell">#${t.transno}</td><td>${t.salesdate||'—'}</td><td class="col-stamp" style="font-size:.7rem;color:var(--muted)">${stamp}</td><td>${customerMap[t.custno]||t.custno||'Unknown'}</td><td>${employeeMap[t.empno]||t.empno||'Unknown'}</td><td class="amount-cell text-right">₱${total.toFixed(2)}</td><td class="text-center">${delBtn}</td>`;
+        bA.appendChild(tr);
     });
     if (bA && !bA.innerHTML) bA.innerHTML = '<tr><td colspan="7" class="empty-row">No sales records found.</td></tr>';
-    if (bD && !bD.innerHTML) bD.innerHTML = '<tr><td colspan="5" class="empty-row">No deleted records.</td></tr>';
-    document.getElementById('txn-count-badge').textContent = `${txns.length} record${txns.length !== 1 ? 's' : ''}`;
+    document.getElementById('txn-count-badge').textContent = `${active.length} record${active.length!==1?'s':''}`;
+}
+
+function renderDeletedItems() {
+    const bD = document.getElementById('deleted-sales-body');
+    const bL = document.getElementById('deleted-lines-body');
+    if (bD) bD.innerHTML = '';
+    if (bL) bL.innerHTML = '';
+    const deleted = allTransactions.filter(t=>t.record_status==='INACTIVE');
+    deleted.forEach(t => {
+        const total = Number(paymentsMap[t.transno]||0);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td class="sales-no-cell" style="text-decoration:line-through;opacity:.6">#${t.transno}</td><td>${t.salesdate||'—'}</td><td>${customerMap[t.custno]||t.custno}</td><td>${employeeMap[t.empno]||t.empno}</td><td class="text-right">₱${total.toFixed(2)}</td><td><button onclick="recoverTransaction('${t.transno}')" class="btn-recover">↩ Recover</button></td>`;
+        if (bD) bD.appendChild(tr);
+    });
+    const deletedDet = salesDetails.filter(d=>d.record_status==='INACTIVE');
+    deletedDet.forEach(d => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td class="sales-no-cell" style="text-decoration:line-through;opacity:.6">#${d.transno}</td><td>${productMap[d.prodcode]||d.prodcode}</td><td>${d.quantity}</td>`;
+        if (bL) bL.appendChild(tr);
+    });
+    if (bD && !bD.innerHTML) bD.innerHTML = '<tr><td colspan="6" class="empty-row">No deleted transactions.</td></tr>';
+    if (bL && !bL.innerHTML) bL.innerHTML = '<tr><td colspan="3" class="empty-row">No deleted line items.</td></tr>';
+}
+
+async function softDelete(transno) {
+    if (!rights.SALES_DEL) return showToast('Access denied.','error');
+    if (!confirm(`Soft-delete #${transno}? (Recoverable from Deleted Items)`)) return;
+    const { error } = await supabase.from(TABLE_TRANSACTIONS).update({record_status:'INACTIVE'}).eq('transno',transno);
+    if (error) showToast(error.message,'error');
+    else { showToast(`Deleted #${transno} — recoverable`,'success'); await loadReferenceData(); await loadTransactions(); }
+}
+
+async function recoverTransaction(transno) {
+    const { error } = await supabase.from(TABLE_TRANSACTIONS).update({record_status:'ACTIVE'}).eq('transno',transno);
+    if (error) showToast(error.message,'error');
+    else { showToast(`✅ Recovered #${transno}`,'success'); await loadReferenceData(); await loadTransactions(); renderDeletedItems(); }
 }
 
 function filterTransactions() {
-    const q = (document.getElementById('txn-search').value || '').toLowerCase();
-    const e = (document.getElementById('filter-employee').value || '').toLowerCase();
+    const q = (document.getElementById('txn-search').value||'').toLowerCase();
+    const e = (document.getElementById('filter-employee').value||'').toLowerCase();
     const rows = document.querySelectorAll('#sales-list-body tr');
     let v = 0;
     rows.forEach(r => {
         const t = r.textContent.toLowerCase();
-        const m = t.includes(q) && (!e || t.includes(e));
-        r.style.display = m ? '' : 'none';
-        if (m) v++;
+        const m = t.includes(q) && (!e||t.includes(e));
+        r.style.display = m?'':'none'; if(m) v++;
     });
-    document.getElementById('txn-count-badge').textContent = `${v} record${v !== 1 ? 's' : ''}`;
+    document.getElementById('txn-count-badge').textContent = `${v} record${v!==1?'s':''}`;
 }
 
 // ── DROPDOWNS ─────────────────────────────────────────────────
@@ -275,10 +337,10 @@ async function saveTransaction() {
     const match = last.match(/TR(\d+)/);
     const next  = `TR${String((match ? Number(match[1]) : 0) + 1).padStart(6, '0')}`;
 
-    const { error: e1 } = await supabase.from(TABLE_TRANSACTIONS).insert([{ transno: next, salesdate: new Date().toISOString().split('T')[0], custno: cust, empno: emp }]);
+    const { error: e1 } = await supabase.from(TABLE_TRANSACTIONS).insert([{ transno: next, salesdate: new Date().toISOString().split('T')[0], custno: cust, empno: emp, record_status:'ACTIVE' }]);
     if (e1) return showToast('Save failed: ' + e1.message, 'error');
 
-    const { error: e2 } = await supabase.from(TABLE_SALESDETAIL).insert([{ transno: next, prodcode: prod, quantity: qty }]);
+    const { error: e2 } = await supabase.from(TABLE_SALESDETAIL).insert([{ transno: next, prodcode: prod, quantity: qty, record_status:'ACTIVE' }]);
     if (e2) return showToast('Detail save failed: ' + e2.message, 'error');
 
     closeCreateModal();
@@ -333,11 +395,62 @@ function renderTopProducts() {
 
 // ── DELETED TABS ──────────────────────────────────────────────
 function switchDeletedTab(tab) {
-    document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-    const isT = tab === 'transactions';
-    document.getElementById(isT ? 'tabpill-txn' : 'tabpill-line').classList.add('active');
-    document.getElementById(isT ? 'tab-transactions' : 'tab-line-items').classList.add('active');
+    document.querySelectorAll('.tab-pill').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    const isT = tab==='transactions';
+    document.getElementById(isT?'tabpill-txn':'tabpill-line').classList.add('active');
+    document.getElementById(isT?'tab-transactions':'tab-line-items').classList.add('active');
+}
+
+// ── LOOKUP PAGES (Read-Only) ──────────────────────────────────
+function renderLookup(type) {
+    const configs = {
+        customers: { tbodyId:'lookup-cust-body', cols:['custno','custname','address','city'] },
+        employees: { tbodyId:'lookup-emp-body',  cols:['empno','lastname','firstname','gender','birthdate','hiredate'] },
+        products:  { tbodyId:'lookup-prod-body', cols:['prodcode','description','unit'] },
+    };
+    const cfg = configs[type]; if (!cfg) return;
+    const tbody = document.getElementById(cfg.tbodyId); if (!tbody) return;
+    const list = type==='customers'?customersList:type==='employees'?employeesList:productsList;
+    tbody.innerHTML = '';
+    list.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = cfg.cols.map(c=>`<td class="td">${row[c]||'—'}</td>`).join('');
+        tbody.appendChild(tr);
+    });
+    if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No data.</td></tr>';
+}
+
+// ── USER MANAGEMENT ──────────────────────────────────────────
+async function renderUserManagement() {
+    if (!rights.USER_MGMT) return;
+    const tbody = document.getElementById('usermgmt-body'); if (!tbody) return;
+    const { data, error } = await supabase.from(TABLE_USERS).select('empno,firstname,lastname,hiredate,record_status').order('lastname');
+    if (error) { showToast(error.message,'error'); return; }
+    tbody.innerHTML = '';
+    (data||[]).forEach(emp => {
+        const isActive  = !emp.record_status || emp.record_status==='ACTIVE';
+        const isSA      = false; // extend later if you add a role column
+        const canToggle = rights.USER_MGMT && !isSA;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="td font-mono">${emp.empno}</td>
+            <td class="td">${emp.lastname}, ${emp.firstname}</td>
+            <td class="td">${emp.hiredate||'—'}</td>
+            <td class="td"><span class="status-badge ${isActive?'status-active':'status-inactive'}">${isActive?'ACTIVE':'INACTIVE'}</span></td>
+            <td class="td text-center">${canToggle
+                ? `<button onclick="toggleUserStatus('${emp.empno}','${emp.record_status||'ACTIVE'}')" class="btn-toggle ${isActive?'btn-deactivate':'btn-activate'}">${isActive?'Deactivate':'Activate'}</button>`
+                : '<span class="muted">—</span>'}</td>`;
+        tbody.appendChild(tr);
+    });
+}
+
+async function toggleUserStatus(empno, currentStatus) {
+    const newStatus = currentStatus==='INACTIVE' ? 'ACTIVE' : 'INACTIVE';
+    if (!confirm(`${newStatus==='INACTIVE'?'Deactivate':'Activate'} employee ${empno}?`)) return;
+    const { error } = await supabase.from(TABLE_USERS).update({record_status:newStatus}).eq('empno',empno);
+    if (error) showToast(error.message,'error');
+    else { showToast(`Employee ${empno} is now ${newStatus}`,'success'); renderUserManagement(); }
 }
 
 // ── CLOCK ─────────────────────────────────────────────────────
@@ -379,3 +492,6 @@ window.autoFillPrice      = autoFillPrice;
 window.saveTransaction    = saveTransaction;
 window.filterTransactions = filterTransactions;
 window.switchDeletedTab   = switchDeletedTab;
+window.softDelete         = softDelete;
+window.recoverTransaction = recoverTransaction;
+window.toggleUserStatus   = toggleUserStatus;
