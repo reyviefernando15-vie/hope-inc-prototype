@@ -40,6 +40,10 @@ The Hope Inc. Sales Management System provides businesses with tools to:
 
 ---
 
+## 📊 Entity Relationship Diagram
+<img width="1507" height="999" alt="image" src="https://github.com/user-attachments/assets/0cef3c02-43e3-40d5-8ff0-735ab7d9615c" />
+
+
 ## ✨ Key Features
 
 ### 🔐 Role-Based Access Control (RBAC)
