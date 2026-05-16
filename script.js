@@ -59,9 +59,19 @@ async function handleLogin() {
     await finalizeLogin({ name: `${u.firstname||''} ${u.lastname||''}`.trim() || 'User', id: u.empno, role: selectedLoginRole });
 }
 
+// ── EMAIL → ROLE MAP ─────────────────────────────────────────
+// Add authorized emails here. Everyone else defaults to USER.
+const EMAIL_ROLES = {
+    'reyvie.fernando15@gmail.com': 'SUPERADMIN',
+    'reyvie.fernando@neu.edu.ph':  'SUPERADMIN',
+    'jcesperanza@neu.edu.ph':      'ADMIN',
+};
+
+function getRoleByEmail(email) {
+    return EMAIL_ROLES[(email || '').toLowerCase()] || 'USER';
+}
+
 function signInWithGoogle() {
-    // Save the selected role before redirect — we'll restore it after OAuth returns
-    sessionStorage.setItem('pendingRole', selectedLoginRole);
     supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: window.location.href.split('?')[0].split('#')[0] }
@@ -74,12 +84,13 @@ function signInWithGoogle() {
 supabase.auth.onAuthStateChange(async (event, session) => {
     if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
         const u    = session.user;
-        const name = u.user_metadata?.full_name || u.email || 'Google User';
-        const savedRole = sessionStorage.getItem('pendingRole') || 'USER';
-        sessionStorage.removeItem('pendingRole');
+        const email = (u.email || '').toLowerCase();
+        const name  = u.user_metadata?.full_name || email || 'Google User';
+        const role  = getRoleByEmail(email);
         // Skip if already inside the app
         if (document.getElementById('main-app').style.display === 'flex') return;
-        await finalizeLogin({ name, id: u.email, role: savedRole });
+        showToast(`Welcome, ${name.split(' ')[0]}! Signed in as ${role}`, 'success');
+        await finalizeLogin({ name, id: email, role });
     }
 });
 
