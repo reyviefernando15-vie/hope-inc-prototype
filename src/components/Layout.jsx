@@ -16,9 +16,9 @@ export default function Layout() {
   function handleLogout() { logout(); navigate('/login'); }
 
   const navItems = [
-    { to: '/',              label: 'Dashboard',    icon: LayoutDashboard, section: 'OVERVIEW' },
-    { to: '/transactions',  label: 'Transactions', icon: FileText,        section: 'RECORDS'  },
-    { to: '/analytics',     label: 'Analytics',    icon: BarChart3,       section: 'RECORDS'  },
+    { to: '/',             label: 'Dashboard',    icon: LayoutDashboard, section: 'OVERVIEW' },
+    { to: '/transactions', label: 'Transactions', icon: FileText,        section: 'RECORDS'  },
+    { to: '/analytics',    label: 'Analytics',    icon: BarChart3,       section: 'RECORDS'  },
     ...(rights.VIEW_DELETED ? [{ to: '/deleted', label: 'Deleted Items', icon: Trash2, section: 'RECORDS', danger: true }] : []),
   ];
 
@@ -28,9 +28,9 @@ export default function Layout() {
   }, {});
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-950">
-      {/* Sidebar */}
-      <aside className="w-64 shrink-0 flex flex-col bg-slate-900 border-r border-slate-800">
+    <div className="flex h-screen overflow-hidden bg-slate-100">
+      {/* Sidebar — stays dark */}
+      <aside className="w-64 shrink-0 flex flex-col bg-[#0f1724] border-r border-slate-800">
         {/* Brand */}
         <div className="flex items-center gap-3 px-5 py-5 border-b border-slate-800">
           <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center font-black text-white text-lg">H</div>
@@ -48,7 +48,7 @@ export default function Layout() {
               {items.map(({ to, label, icon: Icon, danger }) => (
                 <NavLink key={to} to={to} end={to === '/'}
                   className={({ isActive }) =>
-                    `nav-link ${isActive ? 'active' : ''} ${danger ? 'text-rose-500 hover:text-rose-400 hover:bg-rose-500/10' : ''}`}>
+                    `nav-link ${isActive ? 'active' : ''} ${danger ? '!text-rose-400 hover:!text-rose-300 hover:!bg-rose-500/10' : ''}`}>
                   <Icon size={16} />{label}
                 </NavLink>
               ))}
@@ -66,9 +66,9 @@ export default function Layout() {
               <div className="text-sm font-semibold text-white truncate">{user?.name}</div>
               <div className="text-xs text-slate-500">{user?.id}</div>
             </div>
-            <span className="badge bg-indigo-600/20 text-indigo-400 text-[10px]">{user?.role}</span>
+            <span className="badge bg-indigo-600/20 text-indigo-400 text-[10px] px-2 py-0.5">{user?.role}</span>
           </div>
-          <div className="flex items-center justify-between px-3 py-1.5 mb-1">
+          <div className="px-3 py-1.5 mb-1">
             <span className="flex items-center gap-1.5 text-xs text-slate-500">
               <Clock size={12} />{time.toLocaleTimeString('en-PH')}
             </span>
@@ -79,8 +79,8 @@ export default function Layout() {
         </div>
       </aside>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Light main content area */}
+      <div className="flex-1 flex flex-col overflow-hidden bg-slate-100">
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
