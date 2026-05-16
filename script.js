@@ -80,15 +80,36 @@ function signInWithGoogle() {
     });
 }
 
-// Auto-detect returning Google OAuth session on page load
+// Helper: extract avatar from all possible Google OAuth metadata fields
+function extractAvatar(u) {
+    const m = u?.user_metadata || {};
+    return m.avatar_url || m.picture || m.photo_url || m.profile_image_url || null;
+}
+
+// ── Proactive session restore on page load ──────────────────────
+// More reliable than waiting for onAuthStateChange for already-authenticated users
+(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+        const u      = session.user;
+        const email  = (u.email || '').toLowerCase();
+        const name   = u.user_metadata?.full_name || u.user_metadata?.name || email || 'Google User';
+        const role   = getRoleByEmail(email);
+        const avatar = extractAvatar(u);
+        if (document.getElementById('main-app').style.display === 'flex') return;
+        showToast(`Welcome back, ${name.split(' ')[0]}!`, 'success');
+        await finalizeLogin({ name, id: email, role, avatar });
+    }
+})();
+
+// ── Fallback: listen for new sign-ins (e.g. OAuth redirect) ────
 supabase.auth.onAuthStateChange(async (event, session) => {
-    if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
-        const u       = session.user;
-        const email   = (u.email || '').toLowerCase();
-        const name    = u.user_metadata?.full_name || email || 'Google User';
-        const role    = getRoleByEmail(email);
-        const avatar  = u.user_metadata?.avatar_url || u.user_metadata?.picture || null;
-        // Skip if already inside the app
+    if (event === 'SIGNED_IN' && session?.user) {
+        const u      = session.user;
+        const email  = (u.email || '').toLowerCase();
+        const name   = u.user_metadata?.full_name || u.user_metadata?.name || email || 'Google User';
+        const role   = getRoleByEmail(email);
+        const avatar = extractAvatar(u);
         if (document.getElementById('main-app').style.display === 'flex') return;
         showToast(`Welcome, ${name.split(' ')[0]}! Signed in as ${role}`, 'success');
         await finalizeLogin({ name, id: email, role, avatar });
