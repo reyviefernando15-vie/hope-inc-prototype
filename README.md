@@ -1,4 +1,4 @@
-## Hope Inc. Sales Management System
+## Hope, Inc. SMS
 
 A modern, secure, and scalable **Sales Management System** designed to streamline sales operations, monitor transactions in real time, and generate actionable business insights through analytics and visualization.
 
