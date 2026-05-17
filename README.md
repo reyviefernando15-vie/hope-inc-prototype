@@ -104,7 +104,7 @@ cp .env.example .env
 Open `.env` and add your Supabase credentials:
 
 ```env
-VITE_SUPABASE_URL=your_project_url
+VITE_SUPABASE_URL=https://ygoxhjemowubyfzfbumf.supabase.co
 VITE_SUPABASE_ANON_KEY=sb_publishable_NUyGPE4L8ZVmaQRCeR_Ufg_k2Dy-G8c
 ```
 
