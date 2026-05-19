@@ -65,6 +65,8 @@ const EMAIL_ROLES = {
     'reyvie.fernando15@gmail.com': 'SUPERADMIN',
     'reyvie.fernando@neu.edu.ph':  'SUPERADMIN',
     'jcesperanza@neu.edu.ph':      'ADMIN',
+    'bryanaven.escoto@neu.edu.ph': 'ADMIN',
+    'jayvanne.pingal@neu.edu.ph':  'ADMIN',
 };
 
 function getRoleByEmail(email) {
