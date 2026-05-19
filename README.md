@@ -45,6 +45,16 @@ The Hope Inc. Sales Management System provides businesses with tools to:
 
 <img width="1507" height="999" alt="ERD" src="https://github.com/user-attachments/assets/0cef3c02-43e3-40d5-8ff0-735ab7d9615c" />
 
+# Database Structure Overview
+
+- customer — Stores customer information including contact details and payment terms.
+- sales — Records overall sales transactions linked to customers and employees.
+- salesdetail — Tracks individual products, quantities, and pricing per transaction.
+- product — Maintains product records, stock information, and product status.
+- category — Organizes products into different classifications or groups.
+- pricelist — Manages product pricing and effective price updates over time.
+- payment — Stores payment transactions including payment method and references.
+- employee — Contains employee details responsible for processing sales.
 ---
 
 # ✨ Key Features
