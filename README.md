@@ -45,7 +45,7 @@ The Hope Inc. Sales Management System provides businesses with tools to:
 
 <img width="1507" height="999" alt="ERD" src="https://github.com/user-attachments/assets/0cef3c02-43e3-40d5-8ff0-735ab7d9615c" />
 
-# Database Structure Overview
+#### Database Structure Overview
 
 - customer — Stores customer information including contact details and payment terms.
 - sales — Records overall sales transactions linked to customers and employees.
