@@ -170,4 +170,4 @@ npm run dev
 
 ## 📄 License
 
-© 2026 Hope Inc. Development Team. All rights reserved.
+© 2026 Hope, Inc. Development Team. All rights reserved.
