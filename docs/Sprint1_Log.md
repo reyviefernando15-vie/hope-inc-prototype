@@ -86,10 +86,12 @@ Completed the following documentation tasks:
 
 # 🎯 Next Sprint Goals
 
-- Expand authentication validation coverage
-- Add CRUD operation test cases
-- Test role-based access restrictions
-- Improve QA documentation and testing workflow
+- Validate role-based rights matrix and access permissions
+- Test lookup-only table restrictions and protected CRUD behavior
+- Verify cascade visibility and soft-delete recovery behavior
+- Perform RLS protection and restricted access validation
+- Expand transaction workflow QA coverage
+- Improve Sprint QA documentation and pull request workflow
 
 ---
 
