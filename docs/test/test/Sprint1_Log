@@ -7,7 +7,7 @@
 
 ---
 
-## 👥 Team Members & Roles
+# 👥 Team Members & Roles
 
 | Member | Role |
 |--------|------|
@@ -21,7 +21,7 @@
 
 # ✅ Sprint Goal
 
-Project setup, SMS database initialization, Email + Google OAuth authentication, and login guard validation.
+Project setup, Sales Management System initialization, Email + Google OAuth authentication, and login guard validation.
 
 ---
 
@@ -31,65 +31,70 @@ Project setup, SMS database initialization, Email + Google OAuth authentication,
 
 ### Testing Setup
 
-- Configured **Vitest** for unit and integration testing
-- Installed and configured **React Testing Library**
-- Verified test environment setup for authentication testing
+- Installed and configured **Vitest** for automated testing
+- Configured testing environment for Vanilla JavaScript + Vite
+- Verified local testing execution using `npm test`
+- Validated successful test execution workflow
 
 ---
 
-### Authentication Test Cases
+# 🔐 Authentication Test Cases
 
-#### PR-01 — `test/sprint1-auth-flows`
+### PR-01 — `test/sprint1-auth-flows`
 
-Completed and verified the following test cases:
+Completed and verified the following authentication-related test cases:
 
 | Test Case | Status |
 |-----------|--------|
-| Email Registration | ✅ Passed |
-| Google OAuth New User Login | ✅ Passed |
-| Login Guard blocks INACTIVE user | ✅ Passed |
-| Login Guard allows ACTIVE user | ✅ Passed |
+| ACTIVE User Login Validation | ✅ Passed |
+| INACTIVE User Access Restriction | ✅ Passed |
+| Admin Email Validation | ✅ Passed |
 
 ---
 
-### Documentation Tasks
+# 📄 Documentation Tasks
 
-#### PR-02 — `docs/sprint1-log-readme`
+### PR-02 — `docs/sprint1-log-readme`
 
-Completed the following documentation:
+Completed the following documentation tasks:
 
-- Updated project `README.md`
+- Updated `README.md`
 - Added repository setup instructions
 - Added `npm install` guide
-- Added `.env` configuration guide
-- Added `npm run dev` setup
-- Added Supabase project setup reference
+- Added local development setup instructions
+- Added deployment reference using GitHub Pages
+- Documented Sprint 1 testing workflow
 
 ---
 
 # ⚠ Blockers Encountered
 
-- Initial confusion regarding branch naming conventions and pull request workflow.
-- Authentication redirect behavior required multiple testing attempts.
+- Initial configuration issues with Vitest setup
+- Local test files were not detected during initial execution
+- Package configuration required debugging and correction
 
 ---
 
 # 💡 Resolutions
 
-- Reviewed sprint deliverables documentation to align pull requests with expected outputs.
-- Coordinated with team members to validate authentication flows successfully.
+- Updated `package.json` testing configuration
+- Created proper `tests/auth.test.js` structure
+- Verified successful automated test execution locally
+- Coordinated with team members to validate authentication functionality
 
 ---
 
 # 🎯 Next Sprint Goals
 
-- Create rights and permissions test matrix
-- Test Sales CRUD operations
-- Test SalesDetail CRUD operations
-- Validate lookup pages and access restrictions
+- Expand authentication validation coverage
+- Add CRUD operation test cases
+- Test role-based access restrictions
+- Improve QA documentation and testing workflow
 
 ---
 
 # 🚀 Sprint 1 Status
 
 ✅ **Sprint 1 completed successfully**  
+✅ **All authentication tests passed**  
+✅ **Testing environment configured successfully**
