@@ -72,14 +72,16 @@
         <!-- Login Form -->
         <div class="auth-form">
           <div class="form-field">
-            <label class="field-label">Email Address</label>
+            <label class="field-label">Employee ID</label>
             <div class="field-input-wrapper">
               <svg class="field-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
+                <rect x="3" y="4" width="18" height="16" rx="2" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <path d="M9 12h6M9 16h4" />
               </svg>
-              <input type="email" id="login-email" class="field-input" placeholder="Enter your email address" autocomplete="email">
+              <input type="text" id="login-email" class="field-input" placeholder="Enter Employee ID (or 'test')" autocomplete="off">
             </div>
           </div>
           <button id="btn-login" class="btn-login" onclick="handleLogin()">

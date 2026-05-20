@@ -46,21 +46,17 @@ async function handleLogin() {
         await finalizeLogin({ name: 'Demo ' + selectedLoginRole, id: 'T-001', role: selectedLoginRole });
         return;
     }
-    // Query employee table by email field
-    const { data, error } = await supabase
-        .from(TABLE_USERS)
-        .select('empno,firstname,lastname,email,record_status')
-        .eq('email', val)
-        .limit(1);
+    const { data, error } = await supabase.from(TABLE_USERS).select('empno,firstname,lastname,record_status').eq('empno', val).limit(1);
     if (error) { showToast('Error: ' + error.message, 'error'); if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; } return; }
-    if (!data || !data.length) { showToast("Email not found in records. Use 'test' to bypass.", 'error'); if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; } return; }
+    if (!data || !data.length) { showToast("ID not found. Use 'test' to bypass.", 'error'); if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; } return; }
     const u = data[0];
+    // Login Guard — block inactive accounts
     if (u.record_status === 'INACTIVE') {
         showToast('⛔ Account is inactive. Contact Admin.', 'error');
         if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; }
         return;
     }
-    await finalizeLogin({ name: `${u.firstname||''} ${u.lastname||''}`.trim() || 'User', id: u.email || u.empno, role: selectedLoginRole });
+    await finalizeLogin({ name: `${u.firstname||''} ${u.lastname||''}`.trim() || 'User', id: u.empno, role: selectedLoginRole });
 }
 
 // ── EMAIL → ROLE MAP ─────────────────────────────────────────
