@@ -86,18 +86,21 @@ function signInWithGoogle() {
 }
 
 async function signInWithEmail() {
-    const email    = (document.getElementById('login-email-addr')?.value || '').trim();
-    const password = document.getElementById('login-password')?.value || '';
-    const btn      = document.getElementById('btn-email-login');
-    if (!email)    return showToast('Please enter your email address.', 'error');
-    if (!password) return showToast('Please enter your password.', 'error');
-    if (btn) { btn.querySelector('span').textContent = 'Signing in…'; btn.disabled = true; }
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const email = (document.getElementById('login-email-addr')?.value || '').trim();
+    const btn   = document.getElementById('btn-email-login');
+    if (!email) return showToast('Please enter your email address.', 'error');
+    if (btn) { btn.querySelector('span').textContent = 'Sending link…'; btn.disabled = true; }
+    const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: SITE_URL }
+    });
     if (error) {
-        showToast('Login failed: ' + error.message, 'error');
-        if (btn) { btn.querySelector('span').textContent = 'Sign In with Email'; btn.disabled = false; }
+        showToast('Error: ' + error.message, 'error');
+        if (btn) { btn.querySelector('span').textContent = 'Send Magic Link'; btn.disabled = false; }
+    } else {
+        showToast('✅ Magic link sent! Check your email inbox.', 'success');
+        if (btn) { btn.querySelector('span').textContent = 'Link Sent ✔'; }
     }
-    // Success is handled automatically by onAuthStateChange
 }
 
 function setLoginMode(mode) {
@@ -660,10 +663,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const bd = document.getElementById('modal-create');
     if (bd) bd.addEventListener('click', e => { if (e.target === bd) closeCreateModal(); });
     // Enter key support for email login form
-    ['login-email-addr', 'login-password'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') signInWithEmail(); });
-    });
+    const emailAddrEl = document.getElementById('login-email-addr');
+    if (emailAddrEl) emailAddrEl.addEventListener('keydown', e => { if (e.key === 'Enter') signInWithEmail(); });
     // Pre-fill modal date
     const md = document.getElementById('modal-date-display');
     if (md) md.value = new Date().toLocaleDateString('en-PH');

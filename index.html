@@ -99,7 +99,7 @@
           </button>
         </div>
 
-        <!-- Email + Password Form -->
+        <!-- Email Magic Link Form -->
         <div id="form-email" class="auth-form" style="display:none;">
           <div class="form-field">
             <label class="field-label">Email Address</label>
@@ -112,19 +112,11 @@
               <input type="email" id="login-email-addr" class="field-input" placeholder="your@email.com" autocomplete="email">
             </div>
           </div>
-          <div class="form-field">
-            <label class="field-label">Password</label>
-            <div class="field-input-wrapper">
-              <svg class="field-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-              </svg>
-              <input type="password" id="login-password" class="field-input" placeholder="Enter password" autocomplete="current-password">
-            </div>
-          </div>
+          <p style="font-size:.78rem;color:var(--muted,#94a3b8);margin:-4px 0 10px;line-height:1.5;">
+            We'll send a magic link to your email — no password needed.
+          </p>
           <button id="btn-email-login" class="btn-login" onclick="signInWithEmail()">
-            <span>Sign In with Email</span>
+            <span>Send Magic Link</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="2.5" width="16">
               <path d="M5 12h14M12 5l7 7-7 7" />
