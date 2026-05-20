@@ -496,7 +496,7 @@ async function saveTransaction() {
     const unitPrice = Number(productPriceMap[prod] || 0);
     const total     = unitPrice * qty;
 
-    const { error: e2 } = await supabase.from(TABLE_SALESDETAIL).insert([{ transno: next, prodcode: prod, quantity: qty, unitprice: unitPrice }]);
+    const { error: e2 } = await supabase.from(TABLE_SALESDETAIL).insert([{ transno: next, prodcode: prod, quantity: qty }]);
     if (e2) return showToast('Detail save failed: ' + e2.message, 'error');
 
     // Insert payment record so total shows correctly in the list
