@@ -8,7 +8,7 @@
 Sales Management System
 
 > Sprint 3 Final Presentation  
-> Hope, Inc. | New Era University — BS Information Technology
+> Hope, Inc.
 
 ---
 
