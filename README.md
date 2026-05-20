@@ -1,18 +1,19 @@
-## Hope, Inc. Sales Management System (SMS)
+# Hope, Inc. Sales Management System (SMS)
 
 A modern, secure, and scalable **Sales Management System** designed to streamline sales operations, monitor transactions in real time, and generate actionable business insights through analytics and visualization.
 
-Built with a modern full-stack architecture, this system supports efficient sales processing, inventory management, transparent reporting, and role-based access control for better business operations.
+Built with a modern web architecture, this system supports efficient sales processing, inventory management, transparent reporting, and role-based access control for better business operations.
 
 ---
 
-## 🚀 Live Demo
+# 🚀 Live Demo
 
-🌐 **Application:** https://reyviefernando15-vie.github.io/hope-inc-prototype/
+🌐 **Application:**  
+https://reyviefernando15-vie.github.io/hope-inc-prototype/
 
 ---
 
-## 📌 Project Overview
+# 📌 Project Overview
 
 The Hope Inc. Sales Management System provides businesses with tools to:
 
@@ -24,43 +25,59 @@ The Hope Inc. Sales Management System provides businesses with tools to:
 
 ---
 
-## 🛠 Tech Stack
+# 🛠 Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | HTML5 | 
-| Styling | Tailwind CSS |
+| Frontend | HTML5 |
+| Styling | CSS3 |
 | Build Tool | Vite |
 | Backend / Database | Supabase |
 | Database Engine | PostgreSQL |
 | Authentication | Supabase Auth |
-| Language | JavaScript / JSX |
+| Language | JavaScript |
 | Package Manager | npm |
 | Version Control | Git + GitHub |
 
-
 ---
 
-## 📊 Entity Relationship Diagram
-<img width="1507" height="999" alt="image" src="https://github.com/user-attachments/assets/0cef3c02-43e3-40d5-8ff0-735ab7d9615c" />
+# 📊 Entity Relationship Diagram
 
+<img width="1507" height="999" alt="ERD" src="https://github.com/user-attachments/assets/0cef3c02-43e3-40d5-8ff0-735ab7d9615c" />
 
-## ✨ Key Features
+#### Database Structure Overview
 
-### 📊 Real-Time Analytics
+- customer — Stores customer information including contact details and payment terms.
+- sales — Records overall sales transactions linked to customers and employees.
+- salesdetail — Tracks individual products, quantities, and pricing per transaction.
+- product — Maintains product records, stock information, and product status.
+- category — Organizes products into different classifications or groups.
+- pricelist — Manages product pricing and effective price updates over time.
+- payment — Stores payment transactions including payment method and references.
+- employee — Contains employee details responsible for processing sales.
+---
+
+# ✨ Key Features
+
+## 📊 Real-Time Analytics
+
 Interactive dashboards with live reporting for:
 
 - Sales performance
 - Revenue tracking
 - Transaction monitoring
 
-### 📦 Inventory Management
+---
+
+## 📦 Inventory Management
 
 - Product stock monitoring
 - Inventory updates
 - Product movement tracking
 
-### 📝 Audit Logging
+---
+
+## 📝 Audit Logging
 
 Track important system activities such as:
 
@@ -68,9 +85,20 @@ Track important system activities such as:
 - Data modifications
 - Transaction updates
 
-### 📱 Responsive Design
+---
 
-Built with React and Tailwind CSS for seamless experience across:
+## 🔐 Authentication & Access Control
+
+- Email Authentication
+- Google OAuth Login
+- Role-based access validation
+- Login guard protection
+
+---
+
+## 📱 Responsive Design
+
+Optimized for seamless experience across:
 
 - Desktop
 - Tablet
@@ -78,7 +106,7 @@ Built with React and Tailwind CSS for seamless experience across:
 
 ---
 
-## ⚙️ Installation & Local Setup
+# ⚙️ Installation & Local Setup
 
 ### 1. Clone the Repository
 
@@ -142,6 +170,4 @@ npm run dev
 
 ## 📄 License
 
-This project is developed for academic purposes.
-
-© 2026 Hope Inc. Development Team. All rights reserved.
+© 2026 Hope, Inc. Development Team. All rights reserved.
