@@ -1,16 +1,24 @@
-# HopeSMS Presentation Deck
-
-## Slide 1 — Title Slide
-
-# Hope, Inc. Sales Management System
-
-### Sprint Final Presentation
-
-Prepared by:
-- New Era University — BSIT Team
-- M5 — Bryan (QA / Documentation Specialist)
+# Hope SMS — Sprint 3 Presentation Deck
 
 ---
+
+# Slide 1 — Title
+
+### Hope SMS  
+Sales Management System
+
+> Sprint 3 Final Presentation  
+> Hope, Inc. | New Era University — BS Information Technology
+
+---
+
+### Team Members
+
+- M1 — Project Lead / Full-Stack Developer
+- M2 — Database & Backend Engineer
+- M3 — Security & RLS Specialist
+- M4 — Rights & Authentication Specialist
+- M5 — QA / Documentation Specialist
 
 ## Slide 2 — Project Overview
 
