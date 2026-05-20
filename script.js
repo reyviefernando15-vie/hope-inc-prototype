@@ -493,11 +493,20 @@ async function saveTransaction() {
     const { error: e1 } = await supabase.from(TABLE_TRANSACTIONS).insert([{ transno: next, salesdate: new Date().toISOString().split('T')[0], custno: cust, empno: emp }]);
     if (e1) return showToast('Save failed: ' + e1.message, 'error');
 
-    const { error: e2 } = await supabase.from(TABLE_SALESDETAIL).insert([{ transno: next, prodcode: prod, quantity: qty }]);
+    const unitPrice = Number(productPriceMap[prod] || 0);
+    const total     = unitPrice * qty;
+
+    const { error: e2 } = await supabase.from(TABLE_SALESDETAIL).insert([{ transno: next, prodcode: prod, quantity: qty, unitprice: unitPrice }]);
     if (e2) return showToast('Detail save failed: ' + e2.message, 'error');
 
+    // Insert payment record so total shows correctly in the list
+    if (total > 0) {
+        const { error: e3 } = await supabase.from(TABLE_PAYMENTS).insert([{ transno: next, amount: total }]);
+        if (e3) console.warn('Payment record warning:', e3.message);
+    }
+
     closeCreateModal();
-    showToast(`✅ Transaction ${next} saved!`, 'success');
+    showToast(`✅ Transaction ${next} saved! Total: ₱${total.toFixed(2)}`, 'success');
     await loadReferenceData();
     await loadTransactions();
 }
