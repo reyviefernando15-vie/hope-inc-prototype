@@ -160,11 +160,11 @@ npm run dev
 
 | Member | Role |
 |--------|------|
-| M1 | Project Lead / Full-Stack Developer |
-| M2 | Frontend Developer (UI/UX) |
-| M3 | Backend & Database Engineer |
-| M4 | Authentication & Security Specialist |
-| M5 | QA Engineer / Documentation |
+| Fernando| Project Lead / Full-Stack Developer |
+| Pingal | Frontend Developer (UI/UX) |
+| Feranil | Backend & Database Engineer |
+| Tolentino| Authentication & Security Specialist |
+| Escoto| QA Engineer / Documentation |
 
 ---
 
