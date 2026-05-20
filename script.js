@@ -73,13 +73,42 @@ function getRoleByEmail(email) {
     return EMAIL_ROLES[(email || '').toLowerCase()] || 'USER';
 }
 
+// ── SITE URL — must match Supabase Auth → URL Configuration ───────────
+const SITE_URL = 'https://reyviefernando15-vie.github.io/hope-inc-prototype/';
+
 function signInWithGoogle() {
     supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: window.location.href.split('?')[0].split('#')[0] }
+        options: { redirectTo: SITE_URL }
     }).then(({ error }) => {
         if (error) showToast('Google login failed: ' + error.message, 'error');
     });
+}
+
+async function signInWithEmail() {
+    const email    = (document.getElementById('login-email-addr')?.value || '').trim();
+    const password = document.getElementById('login-password')?.value || '';
+    const btn      = document.getElementById('btn-email-login');
+    if (!email)    return showToast('Please enter your email address.', 'error');
+    if (!password) return showToast('Please enter your password.', 'error');
+    if (btn) { btn.querySelector('span').textContent = 'Signing in…'; btn.disabled = true; }
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+        showToast('Login failed: ' + error.message, 'error');
+        if (btn) { btn.querySelector('span').textContent = 'Sign In with Email'; btn.disabled = false; }
+    }
+    // Success is handled automatically by onAuthStateChange
+}
+
+function setLoginMode(mode) {
+    const empForm   = document.getElementById('form-empid');
+    const emailForm = document.getElementById('form-email');
+    const btnEmp    = document.getElementById('mode-empid');
+    const btnEmail  = document.getElementById('mode-email');
+    if (empForm)   empForm.style.display   = mode === 'empid' ? '' : 'none';
+    if (emailForm) emailForm.style.display = mode === 'email' ? '' : 'none';
+    if (btnEmp)    btnEmp.classList.toggle('active', mode === 'empid');
+    if (btnEmail)  btnEmail.classList.toggle('active', mode === 'email');
 }
 
 // Helper: extract avatar from all possible Google OAuth metadata fields
@@ -630,11 +659,21 @@ function showToast(msg, type = '') {
 document.addEventListener('DOMContentLoaded', () => {
     const bd = document.getElementById('modal-create');
     if (bd) bd.addEventListener('click', e => { if (e.target === bd) closeCreateModal(); });
+    // Enter key support for email login form
+    ['login-email-addr', 'login-password'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') signInWithEmail(); });
+    });
+    // Pre-fill modal date
+    const md = document.getElementById('modal-date-display');
+    if (md) md.value = new Date().toLocaleDateString('en-PH');
 });
 
 window.selectLoginRole    = selectLoginRole;
 window.handleLogin        = handleLogin;
 window.signInWithGoogle   = signInWithGoogle;
+window.signInWithEmail    = signInWithEmail;
+window.setLoginMode       = setLoginMode;
 window.switchPage         = switchPage;
 window.toggleSidebar      = toggleSidebar;
 window.setDateFilter      = setDateFilter;
