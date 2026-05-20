@@ -91,34 +91,25 @@ function extractAvatar(u) {
     return m.avatar_url || m.picture || m.photo_url || m.profile_image_url || null;
 }
 
-// ── Proactive session restore on page load ──────────────────────
-// More reliable than waiting for onAuthStateChange for already-authenticated users
-(async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-        const u      = session.user;
-        const email  = (u.email || '').toLowerCase();
-        const name   = u.user_metadata?.full_name || u.user_metadata?.name || email || 'Google User';
-        const role   = getRoleByEmail(email);
-        const avatar = extractAvatar(u);
-        if (document.getElementById('main-app').style.display === 'flex') return;
-        showToast(`Welcome back, ${name.split(' ')[0]}!`, 'success');
-        await finalizeLogin({ name, id: email, role, avatar });
-    }
-})();
+// ── Single handler for ALL auth events (session restore + new sign-ins) ──
+// Handles: INITIAL_SESSION (page load with OAuth token) + SIGNED_IN (new login)
+let loginProcessed = false;
 
-// ── Fallback: listen for new sign-ins (e.g. OAuth redirect) ────
 supabase.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session?.user) {
-        const u      = session.user;
-        const email  = (u.email || '').toLowerCase();
-        const name   = u.user_metadata?.full_name || u.user_metadata?.name || email || 'Google User';
-        const role   = getRoleByEmail(email);
-        const avatar = extractAvatar(u);
-        if (document.getElementById('main-app').style.display === 'flex') return;
-        showToast(`Welcome, ${name.split(' ')[0]}! Signed in as ${role}`, 'success');
-        await finalizeLogin({ name, id: email, role, avatar });
-    }
+    if (event !== 'SIGNED_IN' && event !== 'INITIAL_SESSION') return;
+    if (!session?.user) return;
+    if (loginProcessed) return;
+    if (document.getElementById('main-app').style.display === 'flex') return;
+
+    loginProcessed = true;
+    const u      = session.user;
+    const email  = (u.email || '').toLowerCase();
+    const name   = u.user_metadata?.full_name || u.user_metadata?.name || email || 'Google User';
+    const role   = getRoleByEmail(email);
+    const avatar = extractAvatar(u);
+    const greeting = event === 'INITIAL_SESSION' ? `Welcome back, ${name.split(' ')[0]}!` : `Welcome, ${name.split(' ')[0]}! Signed in as ${role}`;
+    showToast(greeting, 'success');
+    await finalizeLogin({ name, id: email, role, avatar });
 });
 
 const RIGHTS = {
