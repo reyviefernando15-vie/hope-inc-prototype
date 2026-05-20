@@ -46,17 +46,21 @@ async function handleLogin() {
         await finalizeLogin({ name: 'Demo ' + selectedLoginRole, id: 'T-001', role: selectedLoginRole });
         return;
     }
-    const { data, error } = await supabase.from(TABLE_USERS).select('empno,firstname,lastname,record_status').eq('empno', val).limit(1);
+    // Query employee table by email field
+    const { data, error } = await supabase
+        .from(TABLE_USERS)
+        .select('empno,firstname,lastname,email,record_status')
+        .eq('email', val)
+        .limit(1);
     if (error) { showToast('Error: ' + error.message, 'error'); if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; } return; }
-    if (!data || !data.length) { showToast("ID not found. Use 'test' to bypass.", 'error'); if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; } return; }
+    if (!data || !data.length) { showToast("Email not found in records. Use 'test' to bypass.", 'error'); if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; } return; }
     const u = data[0];
-    // Login Guard — block inactive accounts
     if (u.record_status === 'INACTIVE') {
         showToast('⛔ Account is inactive. Contact Admin.', 'error');
         if (btn) { btn.textContent = 'Sign In Securely'; btn.disabled = false; }
         return;
     }
-    await finalizeLogin({ name: `${u.firstname||''} ${u.lastname||''}`.trim() || 'User', id: u.empno, role: selectedLoginRole });
+    await finalizeLogin({ name: `${u.firstname||''} ${u.lastname||''}`.trim() || 'User', id: u.email || u.empno, role: selectedLoginRole });
 }
 
 // ── EMAIL → ROLE MAP ─────────────────────────────────────────
@@ -83,35 +87,6 @@ function signInWithGoogle() {
     }).then(({ error }) => {
         if (error) showToast('Google login failed: ' + error.message, 'error');
     });
-}
-
-async function signInWithEmail() {
-    const email = (document.getElementById('login-email-addr')?.value || '').trim();
-    const btn   = document.getElementById('btn-email-login');
-    if (!email) return showToast('Please enter your email address.', 'error');
-    if (btn) { btn.querySelector('span').textContent = 'Sending link…'; btn.disabled = true; }
-    const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: SITE_URL }
-    });
-    if (error) {
-        showToast('Error: ' + error.message, 'error');
-        if (btn) { btn.querySelector('span').textContent = 'Send Magic Link'; btn.disabled = false; }
-    } else {
-        showToast('✅ Magic link sent! Check your email inbox.', 'success');
-        if (btn) { btn.querySelector('span').textContent = 'Link Sent ✔'; }
-    }
-}
-
-function setLoginMode(mode) {
-    const empForm   = document.getElementById('form-empid');
-    const emailForm = document.getElementById('form-email');
-    const btnEmp    = document.getElementById('mode-empid');
-    const btnEmail  = document.getElementById('mode-email');
-    if (empForm)   empForm.style.display   = mode === 'empid' ? '' : 'none';
-    if (emailForm) emailForm.style.display = mode === 'email' ? '' : 'none';
-    if (btnEmp)    btnEmp.classList.toggle('active', mode === 'empid');
-    if (btnEmail)  btnEmail.classList.toggle('active', mode === 'email');
 }
 
 // Helper: extract avatar from all possible Google OAuth metadata fields
@@ -673,8 +648,6 @@ document.addEventListener('DOMContentLoaded', () => {
 window.selectLoginRole    = selectLoginRole;
 window.handleLogin        = handleLogin;
 window.signInWithGoogle   = signInWithGoogle;
-window.signInWithEmail    = signInWithEmail;
-window.setLoginMode       = setLoginMode;
 window.switchPage         = switchPage;
 window.toggleSidebar      = toggleSidebar;
 window.setDateFilter      = setDateFilter;
