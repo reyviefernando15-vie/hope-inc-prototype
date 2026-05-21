@@ -169,5 +169,5 @@ npm run dev
 ---
 
 
-
-© 2026 TOP DAWG. Development Team. All rights reserved.
+## 📄 License
+© 2026 Hope, Inc. Development Team. All rights reserved
