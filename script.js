@@ -67,6 +67,8 @@ const EMAIL_ROLES = {
     'jcesperanza@neu.edu.ph':      'ADMIN',
     'bryanaven.escoto@neu.edu.ph': 'ADMIN',
     'jayvanne.pingal@neu.edu.ph':  'ADMIN',
+    'marvinferanil123@gmail.com': 'USER',
+
 };
 
 function getRoleByEmail(email) {
